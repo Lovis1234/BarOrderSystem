@@ -2,6 +2,10 @@ package nl.belastingdienst.barordersystem.Models;
 
 import javax.persistence.*;
 import lombok.*;
+import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
+import nl.belastingdienst.barordersystem.Repositories.IngredientRepository;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -21,8 +25,10 @@ public class Drink {
     @ManyToOne
     private FileDocument picture;
 
+
     @ManyToMany
     private List<Ingredient> ingredients;
+
 
 
 }

@@ -1,7 +1,11 @@
 package nl.belastingdienst.barordersystem.Services;
 
 
+import nl.belastingdienst.barordersystem.Dto.DrinkDto;
+import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.FileUploadResponse.FileUploadResponse;
+import nl.belastingdienst.barordersystem.Models.Customer;
+import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Models.FileDocument;
 import nl.belastingdienst.barordersystem.Repositories.DocFileRepository;
 import org.springframework.core.io.Resource;
@@ -17,6 +21,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.*;
@@ -36,7 +42,8 @@ public class DatabaseService {
     }
 
     public FileDocument uploadFileDocument(MultipartFile file) throws IOException {
-        String name = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        Long count = doc.count();
+        String name = StringUtils.cleanPath(Objects.requireNonNull(count + file.getOriginalFilename()));
         FileDocument fileDocument = new FileDocument();
         fileDocument.setFileName(name);
         fileDocument.setDocFile(file.getBytes());
@@ -143,4 +150,22 @@ public class DatabaseService {
                 }
 
     }
-}
+    public void preload(File file)
+            throws IOException
+    {
+        Long count = doc.count();
+        String name = StringUtils.cleanPath(Objects.requireNonNull(count + file.getName()));
+        FileDocument fileDocument = new FileDocument();
+        fileDocument.setFileName(name);
+        FileInputStream fl = new FileInputStream(file);
+        byte[] arr = new byte[(int)file.length()];
+        fl.read(arr);
+        fl.close();
+        fileDocument.setDocFile(arr);
+        doc.save(fileDocument);
+    }
+    public FileDocument getFileByName(String name) {
+        FileDocument fileDocument = doc.findByFileName(name);
+            return fileDocument;
+        }
+    }

@@ -1,8 +1,6 @@
 package nl.belastingdienst.barordersystem.Controllers;
-import nl.belastingdienst.barordersystem.Dto.DrinkDto;
-import nl.belastingdienst.barordersystem.Models.Drink;
-import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
-import nl.belastingdienst.barordersystem.Services.DrinkService;
+import nl.belastingdienst.barordersystem.Dto.CustomerDto;
+import nl.belastingdienst.barordersystem.Services.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -12,32 +10,32 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
+
 @RestController
-@RequestMapping(value = "/drink")
-public class DrinkController {
+@RequestMapping(value = "/customer")
+public class CustomerController {
 
-    DrinkService employeeService;
+    CustomerService employeeService;
 
-    public DrinkController(DrinkService employeeService){
+    public CustomerController(CustomerService employeeService){
         this.employeeService = employeeService;
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<List<DrinkDto>> getAllDrinks(){
-        List<DrinkDto> employeeDtos = employeeService.getAllDrinks();
+    public ResponseEntity<List<CustomerDto>> getAllCustomers(){
+        List<CustomerDto> employeeDtos = employeeService.getAllCustomers();
         return ResponseEntity.ok(employeeDtos);
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<DrinkDto> getOneDrink(@PathVariable Long id){
-        DrinkDto employeeDto = employeeService.getDrinkById(id);
-        return ResponseEntity.ok(employeeDto);
-    }
+//    @GetMapping(value = "/{id}")
+//    public ResponseEntity<CustomerDto> getOneCustomer(@PathVariable Long id){
+//        CustomerDto employeeDto = employeeService.getCustomerById(id);
+//        return ResponseEntity.ok(employeeDto);
+//    }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<Object> createDrink(@Valid @RequestBody DrinkDto employeeDto, BindingResult br){
+    public ResponseEntity<Object> createCustomer(@Valid @RequestBody CustomerDto employeeDto, BindingResult br){
         StringBuilder sb = new StringBuilder();
         if(br.hasErrors()){
             for(FieldError error : br.getFieldErrors()){
@@ -47,9 +45,9 @@ public class DrinkController {
             }
             return new ResponseEntity<>(sb.toString(), HttpStatus.BAD_REQUEST);
         } else {
-            DrinkDto newDrinkDto = employeeService.createDrink(employeeDto);
+            CustomerDto newCustomerDto = employeeService.createCustomer(employeeDto);
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(newDrinkDto.getId()).toUri();
+                    .buildAndExpand(newCustomerDto.getId()).toUri();
             return ResponseEntity.created(location).build();
         }
     }

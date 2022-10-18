@@ -1,10 +1,11 @@
 package nl.belastingdienst.barordersystem.Models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Lob;
+import lombok.Getter;
+import lombok.Setter;
 
+import javax.persistence.*;
+@Getter
+@Setter
 @Entity
 public class FileDocument {
 
@@ -17,20 +18,6 @@ public class FileDocument {
     @Lob
     private byte[] docFile;
 
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public byte[] getDocFile() {
-        return docFile;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public void setDocFile(byte[] docFile) {
-        this.docFile = docFile;
-    }
+    @ManyToOne
+    Customer customer;
 }

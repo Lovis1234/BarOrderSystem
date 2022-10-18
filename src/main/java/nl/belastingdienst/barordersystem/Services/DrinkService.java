@@ -3,7 +3,9 @@ package nl.belastingdienst.barordersystem.Services;
 import nl.belastingdienst.barordersystem.Dto.DrinkDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Drink;
+import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
+import nl.belastingdienst.barordersystem.Repositories.IngredientRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.util.Optional;
 @Service
 public class DrinkService {
     DrinkRepository drinkRepository;
+    IngredientRepository ingredientRepository;
 
     public DrinkService(DrinkRepository drinkRepository) {
         this.drinkRepository = drinkRepository;
@@ -35,6 +38,19 @@ public class DrinkService {
             DrinkDto drinkDto = fromDrink(drink);
             return drinkDto;
         }
+    }
+    public double getDrinkPrice(Long id) {
+        List<Ingredient> ingredientList = ingredientRepository.findIngredientByDrinkId(id);
+        if (ingredientList.isEmpty()) {
+            throw new RecordNotFoundException("Drink ingredients not found");
+        } else {
+            double total = 0;
+            for (Ingredient ingredient : ingredientList) {
+                total += ingredient.getPrice();
+            }
+            return total;
+        }
+
     }
     public DrinkDto createDrink(DrinkDto drinkDto) {
         Drink drink = toDrink(drinkDto);
