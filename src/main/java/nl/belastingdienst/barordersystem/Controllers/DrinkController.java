@@ -10,6 +10,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
@@ -32,9 +33,14 @@ public class DrinkController {
 
     @GetMapping(value = "/price/{id}")
     public ResponseEntity<Double> getDrinkPrice(@PathVariable Long id){
-        System.out.println("jemoeder" + id);
         Double price = drinkService.getDrinkPrice(id);
         return ResponseEntity.ok(price);
+    }
+
+    @GetMapping("/image/{id}")
+    ResponseEntity<byte[]> getDrinkImageByDrinkId(@PathVariable Long id, HttpServletRequest request) {
+
+        return drinkService.getDrinkImage(id, request);
     }
 
     @GetMapping(value = "/{id}")

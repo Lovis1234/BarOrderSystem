@@ -23,10 +23,11 @@ VALUES (7001, 'Wodka', 3.00),
     (7013, 'Water',2),
     (7014, 'Ijs',0.5);
 
-INSERT INTO drinks (id, name) VALUES (8001,'Bacardi Cola');
+INSERT INTO drinks (id, name,picture_id) VALUES (8001,'Berenburg Cola',2);
 
-INSERT INTO drinks_ingredients (drink_id, ingredients_id) VALUES (8001,7002),
-                                                                 (8001,7007);
+INSERT INTO drinks_ingredients (drink_id, ingredients_id) VALUES (8001,7006),
+                                                                 (8001,7007),
+                                                                 (8001,7014);
 
 
 

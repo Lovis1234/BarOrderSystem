@@ -17,7 +17,4 @@ public class FileDocument {
 
     @Lob
     private byte[] docFile;
-
-    @ManyToOne
-    Customer customer;
 }

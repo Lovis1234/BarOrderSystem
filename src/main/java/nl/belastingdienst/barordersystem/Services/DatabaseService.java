@@ -7,7 +7,10 @@ import nl.belastingdienst.barordersystem.FileUploadResponse.FileUploadResponse;
 import nl.belastingdienst.barordersystem.Models.Customer;
 import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Models.FileDocument;
+import nl.belastingdienst.barordersystem.Repositories.CustomerRepository;
 import nl.belastingdienst.barordersystem.Repositories.DocFileRepository;
+import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -32,6 +35,10 @@ import java.util.zip.ZipOutputStream;
 @Service
 public class DatabaseService {
     private final DocFileRepository doc;
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private DrinkRepository drinkRepository;
 
     public DatabaseService(DocFileRepository doc){
         this.doc = doc;
@@ -41,17 +48,39 @@ public class DatabaseService {
         return doc.findAll();
     }
 
-    public FileDocument uploadFileDocument(MultipartFile file) throws IOException {
+
+    public FileDocument uploadFileDocument(MultipartFile file,String type, Long destinationId) throws IOException {
         Long count = doc.count();
         String name = StringUtils.cleanPath(Objects.requireNonNull(count + file.getOriginalFilename()));
         FileDocument fileDocument = new FileDocument();
         fileDocument.setFileName(name);
         fileDocument.setDocFile(file.getBytes());
-
         doc.save(fileDocument);
+
+        if (type.equals("invoice")){
+            insertInvoice(destinationId,fileDocument);
+        } else if (type.equals("drinkImage")) {
+            Drink drink = drinkRepository.findById(destinationId).get();
+            drink.setPicture(fileDocument);
+            drinkRepository.save(drink);
+        }
 
         return fileDocument;
 
+    }
+    private void insertInvoice(Long customerId, FileDocument file) {
+        Customer customer = customerRepository.findById(customerId).get();
+        if (customer.getInvoices() == null) {
+            List<FileDocument> list = null;
+            list.add(file);
+            customer.setInvoices(list);
+            customerRepository.save(customer);
+        } else {
+            List<FileDocument> list = customer.getInvoices();
+            list.add(file);
+            customerRepository.save(customer);
+
+        }
     }
 
     public ResponseEntity<byte[]> singleFileDownload(String fileName, HttpServletRequest request){

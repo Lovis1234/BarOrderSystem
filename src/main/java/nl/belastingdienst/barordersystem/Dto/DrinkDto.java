@@ -2,6 +2,7 @@ package nl.belastingdienst.barordersystem.Dto;
 
 import javax.persistence.*;
 import lombok.*;
+import nl.belastingdienst.barordersystem.Models.FileDocument;
 
 import java.util.List;
 
@@ -12,8 +13,7 @@ import java.util.List;
 public class DrinkDto {
     private Long id;
     private String name;
-    private double price;
-    private String type;
+    private FileDocument picture;
 
 
 }

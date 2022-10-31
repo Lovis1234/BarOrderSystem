@@ -1,11 +1,14 @@
 package nl.belastingdienst.barordersystem.Util;
 
 import nl.belastingdienst.barordersystem.Models.Customer;
+import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Models.FileDocument;
 import nl.belastingdienst.barordersystem.Repositories.CustomerRepository;
+import nl.belastingdienst.barordersystem.Repositories.DocFileRepository;
 import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
 import nl.belastingdienst.barordersystem.Services.CustomerService;
 import nl.belastingdienst.barordersystem.Services.DatabaseService;
+import nl.belastingdienst.barordersystem.Services.DrinkService;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,23 +30,35 @@ import java.util.Objects;
 
 @Component
 public class DataLoader {
-    private CustomerRepository customerRepository;
     private final DatabaseService databaseService;
-    private CustomerService customerService;
+    private final DrinkService drinkService;
+    @Autowired
+    private final DrinkRepository drinkRepository;
+    @Autowired
+    private final DocFileRepository docFileRepository;
 
-    public DataLoader(CustomerRepository customerRepository, DatabaseService databaseService) throws IOException {
-        this.customerRepository = customerRepository;
+    public DataLoader(DatabaseService databaseService, DrinkService drinkService, DrinkRepository drinkRepository, DocFileRepository docFileRepository) throws IOException {
         this.databaseService = databaseService;
-        load();
+        this.drinkService = drinkService;
+        this.drinkRepository = drinkRepository;
+        this.docFileRepository = docFileRepository;
+        loadDummyInvoice();
+        loadDummyPicture();
 
     }
 
-    private void load() throws IOException {
-        Customer customer = new Customer(1001L,"Piebe",null);
+    private void loadDummyInvoice() throws IOException {
         Path path = Paths.get("src/main/resources/DataLoadFiles/2022100001.pdf");
         File file = path.toAbsolutePath().toFile();
-        customerRepository.save(customer);
         databaseService.preload(file);
+
+
+    }
+
+    private void loadDummyPicture() throws IOException {
+        Path path2 = Paths.get("src/main/resources/DataLoadFiles/Berenburg Cola.jpeg");
+        File file2 = path2.toAbsolutePath().toFile();
+        databaseService.preload(file2);
 
 
     }

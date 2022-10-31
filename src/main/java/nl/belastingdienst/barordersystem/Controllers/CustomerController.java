@@ -8,6 +8,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -28,11 +29,7 @@ public class CustomerController {
         return ResponseEntity.ok(employeeDtos);
     }
 
-//    @GetMapping(value = "/{id}")
-//    public ResponseEntity<CustomerDto> getOneCustomer(@PathVariable Long id){
-//        CustomerDto employeeDto = employeeService.getCustomerById(id);
-//        return ResponseEntity.ok(employeeDto);
-//    }
+
 
     @PostMapping(value = "/create")
     public ResponseEntity<Object> createCustomer(@Valid @RequestBody CustomerDto employeeDto, BindingResult br){

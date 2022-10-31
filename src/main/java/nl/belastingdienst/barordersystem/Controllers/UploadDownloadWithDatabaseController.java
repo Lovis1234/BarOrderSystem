@@ -26,14 +26,13 @@ public class UploadDownloadWithDatabaseController {
         this.databaseService = databaseService;
     }
 
-    @PostMapping("single/uploadFactuur")
-    public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file) throws IOException {
+    @PostMapping("single/uploadFile")
+    public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("type") String type, @RequestParam("destinationId") Long id) throws IOException {
 
 
         // next line makes url. example "http://localhost:8080/download/naam.jpg"
-        FileDocument fileDocument = databaseService.uploadFileDocument(file);
-        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFromDB/").path(Objects.requireNonNull(file.getOriginalFilename())).toUriString();
-
+        FileDocument fileDocument = databaseService.uploadFileDocument(file,type,id);
+        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFromDB/").path(Objects.requireNonNull(fileDocument.getFileName())).toUriString();
         String contentType = file.getContentType();
 
         return new FileUploadResponse(fileDocument.getFileName(), url, contentType );

@@ -5,8 +5,10 @@ import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Customer;
 import nl.belastingdienst.barordersystem.Models.FileDocument;
 import nl.belastingdienst.barordersystem.Repositories.CustomerRepository;
+import nl.belastingdienst.barordersystem.Repositories.DocFileRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,6 +49,9 @@ public void preload(Customer customer)
 {
     customerRepository.save(customer);
 }
+
+
+
 
 
     public CustomerDto createCustomer(CustomerDto customerDto) {

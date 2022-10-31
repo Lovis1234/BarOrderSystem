@@ -3,11 +3,16 @@ package nl.belastingdienst.barordersystem.Services;
 import nl.belastingdienst.barordersystem.Dto.DrinkDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Drink;
+import nl.belastingdienst.barordersystem.Models.FileDocument;
 import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
 import nl.belastingdienst.barordersystem.Repositories.IngredientRepository;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +25,23 @@ public class DrinkService {
 
     public DrinkService(DrinkRepository drinkRepository) {
         this.drinkRepository = drinkRepository;
+    }
+
+    public ResponseEntity<byte[]> getDrinkImage(Long drinkId, HttpServletRequest request){
+
+        FileDocument document = drinkRepository.findById(drinkId).get().getPicture();
+
+//        this mediaType decides witch type you accept if you only accept 1 type
+//        MediaType contentType = MediaType.IMAGE_JPEG;
+//        this is going to accept multiple types
+
+        String mimeType = request.getServletContext().getMimeType(document.getFileName());
+
+//        for download attachment use next line
+//        return ResponseEntity.ok().contentType(contentType).header(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=" + resource.getFilename()).body(resource);
+//        for showing image in browser
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + document.getFileName()).body(document.getDocFile());
+
     }
 
     public List<DrinkDto> getAllDrinks() {
@@ -57,6 +79,7 @@ public class DrinkService {
         DrinkDto drinkDto = new DrinkDto();
         drinkDto.setId(drink.getId());
         drinkDto.setName(drink.getName());
+        drinkDto.setPicture(drink.getPicture());
         return drinkDto;
     }
 
@@ -64,6 +87,7 @@ public class DrinkService {
         Drink drink = new Drink();
         drink.setId(drink.getId());
         drink.setName(drinkDto.getName());
+        drink.setPicture(drinkDto.getPicture());
         return drink;
     }
 }
