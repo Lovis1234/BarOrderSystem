@@ -18,26 +18,33 @@ import java.util.List;
 @RequestMapping(value = "/drink")
 public class DrinkController {
 
-    DrinkService employeeService;
+    DrinkService drinkService;
 
-    public DrinkController(DrinkService employeeService){
-        this.employeeService = employeeService;
+    public DrinkController(DrinkService drinkService){
+        this.drinkService = drinkService;
     }
 
     @GetMapping(value = "")
     public ResponseEntity<List<DrinkDto>> getAllDrinks(){
-        List<DrinkDto> employeeDtos = employeeService.getAllDrinks();
-        return ResponseEntity.ok(employeeDtos);
+        List<DrinkDto> drinkDtos = drinkService.getAllDrinks();
+        return ResponseEntity.ok(drinkDtos);
+    }
+
+    @GetMapping(value = "/price/{id}")
+    public ResponseEntity<Double> getDrinkPrice(@PathVariable Long id){
+        System.out.println("jemoeder" + id);
+        Double price = drinkService.getDrinkPrice(id);
+        return ResponseEntity.ok(price);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<DrinkDto> getOneDrink(@PathVariable Long id){
-        DrinkDto employeeDto = employeeService.getDrinkById(id);
-        return ResponseEntity.ok(employeeDto);
+        DrinkDto drinkDto = drinkService.getDrinkById(id);
+        return ResponseEntity.ok(drinkDto);
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<Object> createDrink(@Valid @RequestBody DrinkDto employeeDto, BindingResult br){
+    public ResponseEntity<Object> createDrink(@Valid @RequestBody DrinkDto drinkDto, BindingResult br){
         StringBuilder sb = new StringBuilder();
         if(br.hasErrors()){
             for(FieldError error : br.getFieldErrors()){
@@ -47,7 +54,7 @@ public class DrinkController {
             }
             return new ResponseEntity<>(sb.toString(), HttpStatus.BAD_REQUEST);
         } else {
-            DrinkDto newDrinkDto = employeeService.createDrink(employeeDto);
+            DrinkDto newDrinkDto = drinkService.createDrink(drinkDto);
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                     .buildAndExpand(newDrinkDto.getId()).toUri();
             return ResponseEntity.created(location).build();

@@ -9,6 +9,7 @@ import nl.belastingdienst.barordersystem.Repositories.IngredientRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,18 +41,9 @@ public class DrinkService {
         }
     }
     public double getDrinkPrice(Long id) {
-        List<Ingredient> ingredientList = ingredientRepository.findIngredientByDrinkId(id);
-        if (ingredientList.isEmpty()) {
-            throw new RecordNotFoundException("Drink ingredients not found");
-        } else {
-            double total = 0;
-            for (Ingredient ingredient : ingredientList) {
-                total += ingredient.getPrice();
-            }
-            return total;
+        return drinkRepository.findPriceDrink(id);
         }
 
-    }
     public DrinkDto createDrink(DrinkDto drinkDto) {
         Drink drink = toDrink(drinkDto);
         Drink newDrink = drinkRepository.save(drink);
@@ -65,7 +57,6 @@ public class DrinkService {
         DrinkDto drinkDto = new DrinkDto();
         drinkDto.setId(drink.getId());
         drinkDto.setName(drink.getName());
-        drinkDto.setPrice(drink.getPrice());
         return drinkDto;
     }
 
@@ -73,7 +64,6 @@ public class DrinkService {
         Drink drink = new Drink();
         drink.setId(drink.getId());
         drink.setName(drinkDto.getName());
-        drink.setPrice(drinkDto.getPrice());
         return drink;
     }
 }

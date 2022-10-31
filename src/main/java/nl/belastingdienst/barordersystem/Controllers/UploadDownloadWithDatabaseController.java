@@ -26,7 +26,7 @@ public class UploadDownloadWithDatabaseController {
         this.databaseService = databaseService;
     }
 
-    @PostMapping("single/uploadDb")
+    @PostMapping("single/uploadFactuur")
     public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file) throws IOException {
 
 

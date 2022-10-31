@@ -11,11 +11,6 @@ import java.util.List;
 
 
 public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
-    @Query(value = "SELECT price FROM ingredients AS i WHERE i.id = ?1", nativeQuery = true)
-    List<Ingredient> findIngredientPriceById(String id);
-
-    @Query(value = "SELECT ingredients_id FROM drinks_ingredients AS i WHERE i.drink_id = ?1", nativeQuery = true)
-    List<Ingredient> findIngredientByDrinkId(Long id);
 
 
 }
