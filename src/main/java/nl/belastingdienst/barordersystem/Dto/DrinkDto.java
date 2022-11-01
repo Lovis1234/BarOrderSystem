@@ -3,6 +3,7 @@ package nl.belastingdienst.barordersystem.Dto;
 import javax.persistence.*;
 import lombok.*;
 import nl.belastingdienst.barordersystem.Models.FileDocument;
+import nl.belastingdienst.barordersystem.Models.Ingredient;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 public class DrinkDto {
     private Long id;
     private String name;
-    private FileDocument picture;
+    private List<Ingredient> ingredients;
 
 
 }

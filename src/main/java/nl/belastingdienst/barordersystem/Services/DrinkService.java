@@ -79,7 +79,7 @@ public class DrinkService {
         DrinkDto drinkDto = new DrinkDto();
         drinkDto.setId(drink.getId());
         drinkDto.setName(drink.getName());
-        drinkDto.setPicture(drink.getPicture());
+        drinkDto.setIngredients(drink.getIngredients());
         return drinkDto;
     }
 
@@ -87,7 +87,7 @@ public class DrinkService {
         Drink drink = new Drink();
         drink.setId(drink.getId());
         drink.setName(drinkDto.getName());
-        drink.setPicture(drinkDto.getPicture());
+        drink.setIngredients(drinkDto.getIngredients());
         return drink;
     }
 }

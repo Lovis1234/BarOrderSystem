@@ -4,6 +4,7 @@ package nl.belastingdienst.barordersystem.Controllers;
 import nl.belastingdienst.barordersystem.FileUploadResponse.FileUploadResponse;
 import nl.belastingdienst.barordersystem.Models.FileDocument;
 import nl.belastingdienst.barordersystem.Services.DatabaseService;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

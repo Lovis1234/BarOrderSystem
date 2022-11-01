@@ -49,7 +49,7 @@ public class IngredientService {
         IngredientDto ingredientDto = new IngredientDto();
         ingredientDto.setId(ingredient.getId());
         ingredientDto.setName(ingredient.getName());
-        ingredientDto.setPrice(ingredient.getPrice());
+//        ingredientDto.setPrice(ingredient.getPrice());
         return ingredientDto;
     }
 
@@ -57,7 +57,7 @@ public class IngredientService {
         Ingredient ingredient = new Ingredient();
         ingredient.setId(ingredient.getId());
         ingredient.setName(ingredientDto.getName());
-        ingredient.setPrice(ingredientDto.getPrice());
+//        ingredient.setPrice(ingredientDto.getPrice());
         return ingredient;
     }
 }

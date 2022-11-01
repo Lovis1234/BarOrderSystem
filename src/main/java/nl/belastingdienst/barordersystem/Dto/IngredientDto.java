@@ -12,7 +12,7 @@ import lombok.Setter;
 public class IngredientDto {
     private Long id;
     private String name;
-    private double price;
+
 
 
 }

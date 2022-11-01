@@ -11,23 +11,39 @@ INSERT INTO ingredients (id, name, price)
 VALUES (7001, 'Wodka', 3.00),
     (7002, 'Rum', 3.00),
     (7003, 'Gin', 3.00),
-    (7004, 'Whisky', 5.00),
-    (7005, 'Tequila', 5.00),
+    (7004, 'Whiskey', 3.00),
+    (7005, 'Tequila', 3.00),
     (7006, 'Berenburg', 1.50),
-    (7007, 'Cola', 2),
-    (7008, 'Sinas', 2),
+    (7007, 'Coke', 2),
+    (7008, 'Orange', 2),
     (7009, 'Sprite', 2),
     (7010, 'Cassis', 2),
     (7011, 'Tonic', 2),
     (7012, 'Fristi',3.00),
-    (7013, 'Water',2),
-    (7014, 'Ijs',0.5);
+    (7013, 'Water',1.5),
+    (7014, 'Triple Sec',1.5),
+    (7015, 'Lemon Juice',0.8),
+    (7016, 'Ice',0.2);
 
-INSERT INTO drinks (id, name,picture_id) VALUES (8001,'Berenburg Cola',2);
+INSERT INTO drinks (id, name,picture_id) VALUES (8001,'Berenburg Cola',2),
+                                                (8002,'Long Island Ice Tea',null),
+                                                (8003,'Bacardi 7UP',null);
+
 
 INSERT INTO drinks_ingredients (drink_id, ingredients_id) VALUES (8001,7006),
                                                                  (8001,7007),
-                                                                 (8001,7014);
+                                                                 (8001,7016),
+                                                                 (8002,7001),
+                                                                 (8002,7002),
+                                                                 (8002,7003),
+                                                                 (8002,7005),
+                                                                 (8002,7014),
+                                                                 (8002,7015),
+                                                                 (8002,7016),
+                                                                 (8003,7002),
+                                                                 (8003,7009),
+                                                                 (8003,7016);
+
 
 
 
