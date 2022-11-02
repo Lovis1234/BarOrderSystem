@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Arrays;
+
 @Getter
 @Setter
 @Entity
@@ -17,4 +19,12 @@ public class FileDocument {
 
     @Lob
     private byte[] docFile;
+
+    @Override
+    public String toString() {
+        return "FileDocument{" +
+                "id=" + id +
+                ", fileName='" + fileName + '\'' +
+                '}';
+    }
 }

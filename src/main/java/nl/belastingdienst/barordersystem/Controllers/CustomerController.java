@@ -1,6 +1,9 @@
 package nl.belastingdienst.barordersystem.Controllers;
 import nl.belastingdienst.barordersystem.Dto.CustomerDto;
+import nl.belastingdienst.barordersystem.Models.FileDocument;
 import nl.belastingdienst.barordersystem.Services.CustomerService;
+import nl.belastingdienst.barordersystem.Services.DatabaseService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -9,8 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -18,9 +24,17 @@ import java.util.List;
 public class CustomerController {
 
     CustomerService employeeService;
+    @Autowired
+    DatabaseService databaseService;
 
     public CustomerController(CustomerService employeeService){
         this.employeeService = employeeService;
+    }
+
+    @GetMapping("/getInvoices/{id}")
+    public void getAllFromDB(@PathVariable Long id, HttpServletResponse response) throws IOException {
+        String[] list = databaseService.getALlFromCustomer(id);
+        databaseService.getZipDownload(list,response);
     }
 
     @GetMapping(value = "")

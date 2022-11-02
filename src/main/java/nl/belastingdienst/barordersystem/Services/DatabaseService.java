@@ -48,6 +48,18 @@ public class DatabaseService {
         return doc.findAll();
     }
 
+    public String[] getALlFromCustomer(Long id) {
+
+        List<FileDocument> invoices = doc.findAllByCustomer(id);
+        String[] filenames = new String[invoices.size()];
+        int i = 0;
+            for (FileDocument invoice : invoices) {
+                filenames[i] = invoice.getFileName();
+                i++;
+        }
+        return filenames;
+    }
+
 
     public FileDocument uploadFileDocument(MultipartFile file,String type, Long destinationId) throws IOException {
         Long count = doc.count();

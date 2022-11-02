@@ -2,7 +2,7 @@ INSERT INTO users (username, password, enabled, email) VALUES ('Stan', '$2a$12$a
                                                               ('Pieter', '$2a$12$aoyOCxY0e1LmiTSAV4hQtelwLwLURBdeSLGH1oibivgSslWjI0dSa', true, 'test@testing.tst'),
                                                               ('Piebe', '$2a$12$aoyOCxY0e1LmiTSAV4hQtelwLwLURBdeSLGH1oibivgSslWjI0dSa', true, 'test@testing.tst');
 
-INSERT INTO customer (id,name) VALUES (6911,'Piebe');
+INSERT INTO customer (id,name) VALUES (2001,'Piebe');
 
 INSERT INTO authorities (id, username, authority) VALUES (3001, 'Stan', 'ROLE_Owner'),
                                                          (3002, 'Pieter', 'ROLE_BarEmployee'),
@@ -25,9 +25,9 @@ VALUES (7001, 'Wodka', 3.00),
     (7015, 'Lemon Juice',0.8),
     (7016, 'Ice',0.2);
 
-INSERT INTO drinks (id, name,picture_id) VALUES (8001,'Berenburg Cola',2),
-                                                (8002,'Long Island Ice Tea',null),
-                                                (8003,'Bacardi 7UP',null);
+INSERT INTO drinks (id, name,picture_id,permanent,price) VALUES (8001,'Berenburg Cola',2,true,3.7),
+                                                                (8002,'Long Island Ice Tea',null,true,14.5),
+                                                                (8003,'Bacardi 7UP',null,true,5.2);
 
 
 INSERT INTO drinks_ingredients (drink_id, ingredients_id) VALUES (8001,7006),
@@ -44,7 +44,7 @@ INSERT INTO drinks_ingredients (drink_id, ingredients_id) VALUES (8001,7006),
                                                                  (8003,7009),
                                                                  (8003,7016);
 
-
+INSERT INTO customer_invoices VALUES (2001,1);
 
 
 

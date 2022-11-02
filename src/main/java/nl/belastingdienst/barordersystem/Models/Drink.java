@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+
 @Entity
 @Table(name = "Drinks")
 public class Drink {
@@ -20,6 +20,7 @@ public class Drink {
     @GeneratedValue
     private Long id;
     private String name;
+    private Double price;
     @ManyToOne
     private FileDocument picture;
 
@@ -27,6 +28,5 @@ public class Drink {
     @ManyToMany
     private List<Ingredient> ingredients;
 
-
-
+    private Boolean permanent;
 }

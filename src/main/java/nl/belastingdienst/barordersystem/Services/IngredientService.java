@@ -26,14 +26,14 @@ public class IngredientService {
         }
         return ingredientDtos;
     }
-    public IngredientDto getIngredientById(Long id) {
+    public Ingredient getIngredientById(Long id) {
         Optional<Ingredient> IngredientOptional = ingredientRepository.findById(id);
         if (!IngredientOptional.isPresent()) {
             throw new RecordNotFoundException("Ingredient not found");
         } else {
             Ingredient ingredient = IngredientOptional.get();
             IngredientDto ingredientDto = fromIngredient(ingredient);
-            return ingredientDto;
+            return ingredient;
         }
     }
     public IngredientDto createIngredient(IngredientDto ingredientDto) {

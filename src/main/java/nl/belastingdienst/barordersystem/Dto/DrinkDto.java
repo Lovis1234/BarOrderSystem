@@ -14,7 +14,9 @@ import java.util.List;
 public class DrinkDto {
     private Long id;
     private String name;
+    private Double price;
     private List<Ingredient> ingredients;
+
 
 
 }

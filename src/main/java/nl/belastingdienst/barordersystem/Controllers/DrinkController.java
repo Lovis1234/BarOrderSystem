@@ -1,7 +1,7 @@
 package nl.belastingdienst.barordersystem.Controllers;
+import nl.belastingdienst.barordersystem.Dto.CreateDrinkDto;
 import nl.belastingdienst.barordersystem.Dto.DrinkDto;
 import nl.belastingdienst.barordersystem.Models.Drink;
-import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
 import nl.belastingdienst.barordersystem.Services.DrinkService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
+import java.text.DecimalFormat;
 import java.util.List;
 @RestController
 @RequestMapping(value = "/drink")
@@ -50,7 +50,7 @@ public class DrinkController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<Object> createDrink(@Valid @RequestBody DrinkDto drinkDto, BindingResult br){
+    public ResponseEntity<Object> createDrink(@Valid @RequestBody CreateDrinkDto drinkDto, BindingResult br){
         StringBuilder sb = new StringBuilder();
         if(br.hasErrors()){
             for(FieldError error : br.getFieldErrors()){
@@ -60,11 +60,40 @@ public class DrinkController {
             }
             return new ResponseEntity<>(sb.toString(), HttpStatus.BAD_REQUEST);
         } else {
-            DrinkDto newDrinkDto = drinkService.createDrink(drinkDto);
+            Drink newDrink = drinkService.createDrink(drinkDto);
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(newDrinkDto.getId()).toUri();
+                    .buildAndExpand(newDrink.getId()).toUri();
             return ResponseEntity.created(location).build();
         }
+    }
+    @PostMapping(value = "/createCustom")
+    public ResponseEntity<String> createCustomDrink(@Valid @RequestBody CreateDrinkDto drinkDto, BindingResult br){
+        StringBuilder sb = new StringBuilder();
+        if(br.hasErrors()){
+            for(FieldError error : br.getFieldErrors()){
+                sb.append(error.getField() + ": ");
+                sb.append(error.getDefaultMessage());
+                sb.append("\n");
+            }
+            return new ResponseEntity<>(sb.toString(), HttpStatus.BAD_REQUEST);
+        } else {
+            Drink newDrink = drinkService.createCustomDrink(drinkDto);
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(newDrink.getId()).toUri();
+            DecimalFormat df = new DecimalFormat("###.##");
+            return ResponseEntity.ok(newDrink.getName() + " is nu te bestellen voor €" + df.format(newDrink.getPrice()) );
+        }
+    }
+    @GetMapping(value = "/{id}2")
+    public ResponseEntity<DrinkDto> AddIngredientToDrink(@PathVariable Long id){
+        DrinkDto drinkDto = drinkService.getDrinkById(id);
+        return ResponseEntity.ok(drinkDto);
+    }
+
+    @DeleteMapping(value = "/deleteCustomDrinks")
+    public ResponseEntity<String> deleteCustomDrinks(){
+        Long deleted = drinkService.deleteCustomDrinks();
+        return ResponseEntity.ok("Deleted " + deleted + " custom drink(s).");
     }
 
 
