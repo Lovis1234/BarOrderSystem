@@ -1,9 +1,17 @@
 package nl.belastingdienst.barordersystem.Services;
 
 
+import nl.belastingdienst.barordersystem.Dto.DrinkDto;
+import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.FileUploadResponse.FileUploadResponse;
+import nl.belastingdienst.barordersystem.Models.Customer;
+import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Models.FileDocument;
+import nl.belastingdienst.barordersystem.Models.Ingredient;
+import nl.belastingdienst.barordersystem.Repositories.CustomerRepository;
 import nl.belastingdienst.barordersystem.Repositories.DocFileRepository;
+import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +25,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.*;
@@ -26,6 +36,10 @@ import java.util.zip.ZipOutputStream;
 @Service
 public class DatabaseService {
     private final DocFileRepository doc;
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private DrinkRepository drinkRepository;
 
     public DatabaseService(DocFileRepository doc){
         this.doc = doc;
@@ -35,60 +49,58 @@ public class DatabaseService {
         return doc.findAll();
     }
 
-    public FileDocument uploadFileDocument(MultipartFile file) throws IOException {
-        String name = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+    public String[] getALlFromCustomer(Long id) {
+        List<FileDocument> invoices = doc.findAllByCustomer(id);
+        String[] filenames = new String[invoices.size()];
+        int i = 0;
+            for (FileDocument invoice : invoices) {
+                filenames[i] = invoice.getFileName();
+                i++;
+        }
+        return filenames;
+    }
+
+
+    public FileDocument uploadFileDocument(MultipartFile file,String type, Long destinationId) throws IOException {
+        Long count = doc.count();
+        String name = StringUtils.cleanPath(Objects.requireNonNull(count + file.getOriginalFilename()));
         FileDocument fileDocument = new FileDocument();
         fileDocument.setFileName(name);
         fileDocument.setDocFile(file.getBytes());
-
         doc.save(fileDocument);
+
+        if (type.equals("invoice")){
+            insertInvoice(destinationId,fileDocument);
+        } else if (type.equals("drinkImage")) {
+            Drink drink = drinkRepository.findById(destinationId).get();
+            drink.setPicture(fileDocument);
+            drinkRepository.save(drink);
+        }
 
         return fileDocument;
 
+    }
+    private void insertInvoice(Long customerId, FileDocument file) {
+        Customer customer = customerRepository.findById(customerId).get();
+        if (customer.getInvoices() == null) {
+            List<FileDocument> list = null;
+            list.add(file);
+            customer.setInvoices(list);
+            customerRepository.save(customer);
+        } else {
+            List<FileDocument> list = customer.getInvoices();
+            list.add(file);
+            customerRepository.save(customer);
+
+        }
     }
 
     public ResponseEntity<byte[]> singleFileDownload(String fileName, HttpServletRequest request){
 
        FileDocument document = doc.findByFileName(fileName);
-
-//        this mediaType decides witch type you accept if you only accept 1 type
-//        MediaType contentType = MediaType.IMAGE_JPEG;
-//        this is going to accept multiple types
-
         String mimeType = request.getServletContext().getMimeType(document.getFileName());
-
-//        for download attachment use next line
-//        return ResponseEntity.ok().contentType(contentType).header(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=" + resource.getFilename()).body(resource);
-//        for showing image in browser
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + document.getFileName()).body(document.getDocFile());
 
-    }
-
-    public List<FileUploadResponse> createMultipleUpload(MultipartFile[] files){
-        List<FileUploadResponse> uploadResponseList = new ArrayList<>();
-        Arrays.stream(files).forEach(file -> {
-
-            String name = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-            FileDocument fileDocument = new FileDocument();
-            fileDocument.setFileName(name);
-            try {
-                fileDocument.setDocFile(file.getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            doc.save(fileDocument);
-
-//            next line makes url. example "http://localhost:8080/download/naam.jpg"
-            String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFromDB/").path(name).toUriString();
-
-            String contentType = file.getContentType();
-
-            FileUploadResponse response = new FileUploadResponse(name, contentType, url);
-
-            uploadResponseList.add(response);
-        });
-        return uploadResponseList;
     }
 
     public void getZipDownload(String[] files, HttpServletResponse response) throws IOException {
@@ -110,7 +122,7 @@ public class DatabaseService {
 
     public Resource downLoadFileDatabase(String fileName) {
 
-        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFromDB/").path(fileName).toUriString();
+        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/download/").path(fileName).toUriString();
 
         Resource resource;
 
@@ -119,8 +131,8 @@ public class DatabaseService {
         } catch (MalformedURLException e) {
             throw new RuntimeException("Issue in reading the file", e);
         }
-
         if(resource.exists()&& resource.isReadable()) {
+
             return resource;
         } else {
             throw new RuntimeException("the file doesn't exist or not readable");
@@ -143,4 +155,24 @@ public class DatabaseService {
                 }
 
     }
-}
+    public void preload(File file)
+            throws IOException
+    {
+        Long count = doc.count();
+        String name = StringUtils.cleanPath(Objects.requireNonNull(count + file.getName()));
+        FileDocument fileDocument = new FileDocument();
+        fileDocument.setFileName(name);
+        FileInputStream fl = new FileInputStream(file);
+        byte[] arr = new byte[(int)file.length()];
+        fl.read(arr);
+        fl.close();
+        fileDocument.setDocFile(arr);
+        doc.save(fileDocument);
+    }
+    public ResponseEntity<byte[]> getDrinkImage(Long drinkId, HttpServletRequest request){
+        FileDocument document = drinkRepository.findById(drinkId).get().getPicture();
+        String mimeType = request.getServletContext().getMimeType(document.getFileName());
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + document.getFileName()).body(document.getDocFile());
+
+    }
+    }
