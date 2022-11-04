@@ -63,7 +63,9 @@ public class SecurityFilter {
                 .antMatchers("/multiple/upload/db").hasRole("STAFF")
                 .antMatchers("/getAll").hasRole("STAFF")
 
+                .antMatchers("/users/create").permitAll()
                 .antMatchers("/users/**").hasRole("STAFF")
+
 
                 .antMatchers("/**").denyAll()
                 .and()
