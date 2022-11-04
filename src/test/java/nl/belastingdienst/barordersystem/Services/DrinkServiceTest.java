@@ -40,7 +40,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@RunWith(MockitoJUnitRunner.Silent.class)
 class DrinkServiceTest {
 
     Drink drink;
@@ -75,30 +74,34 @@ class DrinkServiceTest {
 
     @Test
     void getAllDrinks() {
+        //arange
         DrinkDto expectedDrinkDto = new DrinkDto(1L,"Red Bull",0.0,null);
         List<DrinkDto> expected = new ArrayList<>();
         expected.add(expectedDrinkDto);
 
+        //act
         Mockito
 
         .when(drinkRepository.findAll())
                 .thenReturn(List.of(drink));
 
         List<DrinkDto> actual = drinkService.getAllDrinks();
+        //assert
         assertThat(actual.size()).isEqualTo(expected.size());
         assertThat(actual).contains(expectedDrinkDto);
     }
 
     @Test
-    void getDrinkById() {
+    void getDrinkByIdGoodFlowAndDrinkNotFoundError() {
+        //arange
         DrinkDto expected = new DrinkDto(1L,"Red Bull",0.0,null);
-
+        //act
         Mockito
                 .when(drinkRepository.findById(drink.getId()))
                 .thenReturn(Optional.of(drink));
 
         DrinkDto actual = drinkService.getDrinkById(drink.getId());
-
+        //assert
         assertEquals(actual.getId(),expected.getId());
         assertEquals(actual.getPrice(),expected.getPrice());
         assertEquals(actual.getIngredients(),expected.getIngredients());
@@ -109,7 +112,7 @@ class DrinkServiceTest {
     }
 
     @Test
-    void getDrinkPriceTest() {
+    void getDrinkPriceEqualsExpected() {
         drink.setIngredients(listFilled);
         Double expected = drink.getPrice();
 
@@ -124,7 +127,7 @@ class DrinkServiceTest {
     }
 
     @Test
-    void createDrink() {
+    void createDrinkReturnsExpected() {
         CreateDrinkDto input = new CreateDrinkDto("Red Bull",null);
         drink = new Drink(null,"Red Bull - Custom drink",null,null,null,false);
         Drink drinkSaved = drink;
@@ -152,7 +155,7 @@ class DrinkServiceTest {
     }
 
     @Test
-    void deleteCustomDrinks() {
+    void deleteCustomDrinksReturnsExpectedId() {
         Mockito
                 .when(drinkRepository.deleteByPermanent(false))
                 .thenReturn(drink.getId());
@@ -163,7 +166,8 @@ class DrinkServiceTest {
     }
 
     @Test
-    void createCustomDrink() {
+    void createCustomDrinkReturnsExpectedDrink() {
+        // arange
         CreateDrinkDto input = new CreateDrinkDto("Red Bull",null);
         drink = new Drink(null,"Red Bull - Custom drink",null,null,null,false);
         Drink drinkSaved = drink;
@@ -171,16 +175,19 @@ class DrinkServiceTest {
         longArray[0] = null;
         input.setIngredients(longArray);
 
+
         Drink expected = new Drink(null,"Red Bull - Custom drink",null,null,null,false);
         List<Ingredient> listIngredient = new ArrayList<>();
         listIngredient.add(null);
         expected.setIngredients(listIngredient);
+        //act
 
         Mockito
                 .when(drinkRepository.findById(drink.getId()))
                 .thenReturn(Optional.of(drinkSaved));
 
         Drink actual = drinkService.createCustomDrink(input);
+        //assert
 
         assertEquals(expected.getId(),actual.getId());
         assertEquals(expected.getPermanent(),actual.getPermanent());
@@ -194,7 +201,7 @@ class DrinkServiceTest {
 
     }
     @Test
-    void addIngredient() {
+    void addIngredientSavesIngredientAndByWrongIdReturnsCustomError() {
     Drink drinkExpected = new Drink(1L,"Red Bull Vodka",0.0,null,null,null);
 
     drink.setIngredients(listFilled);
@@ -218,7 +225,7 @@ class DrinkServiceTest {
                 "Drink not found");
     }
     @Test
-    void removeIngredient() {
+    void removeIngredientAndSaveUpdatedDrink() {
         drink.setIngredients(listFilled);
 
 
@@ -242,7 +249,7 @@ class DrinkServiceTest {
                 "Drink not found");
     }
     @Test
-    void deleteDrink(){
+    void deleteDrinkReachesDeleteAndThrowsRightError(){
 
         Mockito
                 .when(drinkRepository.findById(drink.getId()))

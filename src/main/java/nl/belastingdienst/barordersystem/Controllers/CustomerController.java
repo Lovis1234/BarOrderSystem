@@ -48,9 +48,9 @@ public class CustomerController {
             }
             return new ResponseEntity<>(sb.toString(), HttpStatus.BAD_REQUEST);
         } else {
-            CustomerDto newCustomerDto = customerService.createCustomer(customerDto);
+            customerService.createCustomer(customerDto);
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(newCustomerDto.getId()).toUri();
+                    .buildAndExpand(customerDto.getId()).toUri();
             return ResponseEntity.created(location).build();
         }
     }
