@@ -27,46 +27,35 @@ public class UploadDownloadWithDatabaseController {
         this.databaseService = databaseService;
     }
 
-    @PostMapping("single/uploadFile")
+    @PostMapping("/upload")
     public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("type") String type, @RequestParam("destinationId") Long id) throws IOException {
-
-
-        // next line makes url. example "http://localhost:8080/download/naam.jpg"
         FileDocument fileDocument = databaseService.uploadFileDocument(file,type,id);
         String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFromDB/").path(Objects.requireNonNull(fileDocument.getFileName())).toUriString();
         String contentType = file.getContentType();
 
-        return new FileUploadResponse(fileDocument.getFileName(), url, contentType );
+        return new FileUploadResponse(fileDocument.getFileName(), contentType, url );
     }
 
-    //    get for single download
-    @GetMapping("/downloadFromDB/{fileName}")
+
+    @GetMapping("/download/{fileName}")
     ResponseEntity<byte[]> downLoadSingleFile(@PathVariable String fileName, HttpServletRequest request) {
 
         return databaseService.singleFileDownload(fileName, request);
     }
 
-//    post for multiple uploads to database
-    @PostMapping("/multiple/upload/db")
-    List<FileUploadResponse> multipleUpload(@RequestParam("files") MultipartFile [] files) {
-
-        if(files.length > 7) {
-            throw new RuntimeException("to many files selected");
-        }
-
-        return databaseService.createMultipleUpload(files);
-
-    }
-
-    @GetMapping("zipDownload/db")
-    public void zipDownload(@RequestParam("fileName") String[] files, HttpServletResponse response) throws IOException {
-
-        databaseService.getZipDownload(files, response);
-
-    }
-
-    @GetMapping("/getAll/db")
-    public Collection<FileDocument> getAllFromDB(){
+    @GetMapping("/getAll")
+    public Collection<FileDocument> getAllFiles(){
             return databaseService.getALlFromDB();
+    }
+
+    @GetMapping("/drinkimage/{id}")
+    ResponseEntity<byte[]> getDrinkImageByDrinkId(@PathVariable Long id, HttpServletRequest request) {
+        return databaseService.getDrinkImage(id, request);
+    }
+
+    @GetMapping("/getInvoices/{id}")
+    public void getAllInvoices(@PathVariable Long id, HttpServletResponse response) throws IOException {
+        String[] list = databaseService.getALlFromCustomer(id);
+        databaseService.getZipDownload(list,response);
     }
 }

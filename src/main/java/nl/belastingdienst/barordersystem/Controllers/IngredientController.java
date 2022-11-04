@@ -8,6 +8,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
@@ -17,22 +18,22 @@ import java.util.List;
 @RequestMapping(value = "/ingredient")
 public class IngredientController {
 
-    IngredientService employeeService;
+    IngredientService ingredientService;
 
-    public IngredientController(IngredientService employeeService){
-        this.employeeService = employeeService;
+    public IngredientController(IngredientService ingredientService){
+        this.ingredientService = ingredientService;
     }
 
     @GetMapping(value = "")
     public ResponseEntity<List<IngredientDto>> getAllIngredients(){
-        List<IngredientDto> employeeDtos = employeeService.getAllIngredients();
-        return ResponseEntity.ok(employeeDtos);
+        List<IngredientDto> ingredientDtos = ingredientService.getAllIngredients();
+        return ResponseEntity.ok(ingredientDtos);
     }
 
 
 
     @PostMapping(value = "/create")
-    public ResponseEntity<Object> createIngredient(@Valid @RequestBody IngredientDto employeeDto, BindingResult br){
+    public ResponseEntity<Object> createIngredient(@Valid @RequestBody IngredientDto ingredientDto, BindingResult br){
         StringBuilder sb = new StringBuilder();
         if(br.hasErrors()){
             for(FieldError error : br.getFieldErrors()){
@@ -42,11 +43,17 @@ public class IngredientController {
             }
             return new ResponseEntity<>(sb.toString(), HttpStatus.BAD_REQUEST);
         } else {
-            IngredientDto newIngredientDto = employeeService.createIngredient(employeeDto);
+            IngredientDto newIngredientDto = ingredientService.createIngredient(ingredientDto);
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                     .buildAndExpand(newIngredientDto.getId()).toUri();
             return ResponseEntity.created(location).build();
         }
+    }
+
+    @DeleteMapping(value = "/delete/{id}")
+    public ResponseEntity<Object> deleteUser(@PathVariable("id") Long id) {
+        ingredientService.deleteIngredient(id);
+        return ResponseEntity.noContent().build();
     }
 
 

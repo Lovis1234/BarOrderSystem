@@ -7,6 +7,7 @@ import nl.belastingdienst.barordersystem.FileUploadResponse.FileUploadResponse;
 import nl.belastingdienst.barordersystem.Models.Customer;
 import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Models.FileDocument;
+import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Repositories.CustomerRepository;
 import nl.belastingdienst.barordersystem.Repositories.DocFileRepository;
 import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
@@ -49,7 +50,6 @@ public class DatabaseService {
     }
 
     public String[] getALlFromCustomer(Long id) {
-
         List<FileDocument> invoices = doc.findAllByCustomer(id);
         String[] filenames = new String[invoices.size()];
         int i = 0;
@@ -98,45 +98,9 @@ public class DatabaseService {
     public ResponseEntity<byte[]> singleFileDownload(String fileName, HttpServletRequest request){
 
        FileDocument document = doc.findByFileName(fileName);
-
-//        this mediaType decides witch type you accept if you only accept 1 type
-//        MediaType contentType = MediaType.IMAGE_JPEG;
-//        this is going to accept multiple types
-
         String mimeType = request.getServletContext().getMimeType(document.getFileName());
-
-//        for download attachment use next line
-//        return ResponseEntity.ok().contentType(contentType).header(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=" + resource.getFilename()).body(resource);
-//        for showing image in browser
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + document.getFileName()).body(document.getDocFile());
 
-    }
-
-    public List<FileUploadResponse> createMultipleUpload(MultipartFile[] files){
-        List<FileUploadResponse> uploadResponseList = new ArrayList<>();
-        Arrays.stream(files).forEach(file -> {
-
-            String name = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-            FileDocument fileDocument = new FileDocument();
-            fileDocument.setFileName(name);
-            try {
-                fileDocument.setDocFile(file.getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            doc.save(fileDocument);
-
-//            next line makes url. example "http://localhost:8080/download/naam.jpg"
-            String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFromDB/").path(name).toUriString();
-
-            String contentType = file.getContentType();
-
-            FileUploadResponse response = new FileUploadResponse(name, contentType, url);
-
-            uploadResponseList.add(response);
-        });
-        return uploadResponseList;
     }
 
     public void getZipDownload(String[] files, HttpServletResponse response) throws IOException {
@@ -158,7 +122,7 @@ public class DatabaseService {
 
     public Resource downLoadFileDatabase(String fileName) {
 
-        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFromDB/").path(fileName).toUriString();
+        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/download/").path(fileName).toUriString();
 
         Resource resource;
 
@@ -167,8 +131,8 @@ public class DatabaseService {
         } catch (MalformedURLException e) {
             throw new RuntimeException("Issue in reading the file", e);
         }
-
         if(resource.exists()&& resource.isReadable()) {
+
             return resource;
         } else {
             throw new RuntimeException("the file doesn't exist or not readable");
@@ -205,8 +169,10 @@ public class DatabaseService {
         fileDocument.setDocFile(arr);
         doc.save(fileDocument);
     }
-    public FileDocument getFileByName(String name) {
-        FileDocument fileDocument = doc.findByFileName(name);
-            return fileDocument;
-        }
+    public ResponseEntity<byte[]> getDrinkImage(Long drinkId, HttpServletRequest request){
+        FileDocument document = drinkRepository.findById(drinkId).get().getPicture();
+        String mimeType = request.getServletContext().getMimeType(document.getFileName());
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + document.getFileName()).body(document.getDocFile());
+
+    }
     }

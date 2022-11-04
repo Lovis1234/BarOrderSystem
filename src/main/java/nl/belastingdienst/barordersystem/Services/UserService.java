@@ -1,13 +1,21 @@
 package nl.belastingdienst.barordersystem.Services;
 
 
+import nl.belastingdienst.barordersystem.Dto.CustomerDto;
 import nl.belastingdienst.barordersystem.Dto.UserDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Authority;
+import nl.belastingdienst.barordersystem.Models.Barkeeper;
+import nl.belastingdienst.barordersystem.Models.Customer;
 import nl.belastingdienst.barordersystem.Models.User;
+import nl.belastingdienst.barordersystem.Repositories.CustomerRepository;
 import nl.belastingdienst.barordersystem.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,8 +27,10 @@ import java.util.Set;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
-
-
+    @Autowired
+    private CustomerService customerService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     public List<UserDto> getUsers() {
         List<UserDto> collection = new ArrayList<>();
         List<User> list = userRepository.findAll();
@@ -46,7 +56,10 @@ public class UserService {
     }
 
     public String createUser(UserDto userDto) {
-        User newUser = userRepository.save(toUser(userDto));
+        UserDto newuserDto = userDto;
+        User newUser = userRepository.save(toUser(newuserDto));
+
+
         return newUser.getUsername();
     }
 
@@ -55,7 +68,7 @@ public class UserService {
     }
 
     public void updateUser(String username, UserDto newUser) {
-        if (!userRepository.existsById(username)) throw new RecordNotFoundException();
+        if (!userRepository.existsById(username)) throw new RecordNotFoundException("User not found");
         User user = userRepository.findById(username).get();
         user.setPassword(newUser.getPassword());
         userRepository.save(user);
@@ -90,8 +103,6 @@ public class UserService {
 
         dto.username = user.getUsername();
         dto.password = user.getPassword();
-        dto.enabled = user.isEnabled();
-        dto.email = user.getEmail();
         dto.authorities = user.getAuthorities();
 
         return dto;
@@ -102,9 +113,7 @@ public class UserService {
         var user = new User();
 
         user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword());
-        user.setEnabled(userDto.getEnabled());
-        user.setEmail(userDto.getEmail());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         return user;
     }

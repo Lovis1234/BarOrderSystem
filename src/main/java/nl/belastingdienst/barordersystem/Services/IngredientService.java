@@ -32,7 +32,6 @@ public class IngredientService {
             throw new RecordNotFoundException("Ingredient not found");
         } else {
             Ingredient ingredient = IngredientOptional.get();
-            IngredientDto ingredientDto = fromIngredient(ingredient);
             return ingredient;
         }
     }
@@ -49,16 +48,23 @@ public class IngredientService {
         IngredientDto ingredientDto = new IngredientDto();
         ingredientDto.setId(ingredient.getId());
         ingredientDto.setName(ingredient.getName());
-//        ingredientDto.setPrice(ingredient.getPrice());
+        ingredientDto.setPrice(ingredient.getPrice());
         return ingredientDto;
     }
 
     private Ingredient toIngredient(IngredientDto ingredientDto){
         Ingredient ingredient = new Ingredient();
-        ingredient.setId(ingredient.getId());
+        ingredient.setId(ingredientDto.getId());
         ingredient.setName(ingredientDto.getName());
-//        ingredient.setPrice(ingredientDto.getPrice());
+        ingredient.setPrice(ingredientDto.getPrice());
         return ingredient;
+    }
+
+    public void deleteIngredient(Long id) {
+        Optional<Ingredient> ingredientOptional = ingredientRepository.findById(id);
+        if (ingredientOptional.isPresent()) {
+            ingredientRepository.delete(ingredientOptional.get());
+        } else throw new RecordNotFoundException("Ingredient not found");
     }
 }
 

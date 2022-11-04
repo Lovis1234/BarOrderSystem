@@ -7,6 +7,7 @@ import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Models.FileDocument;
 import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
+import nl.belastingdienst.barordersystem.Repositories.IngredientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -20,29 +21,17 @@ import java.util.Optional;
 
 @Service
 public class DrinkService {
+    @Autowired
     DrinkRepository drinkRepository;
+    @Autowired
+    IngredientRepository ingredientRepository;
     @Autowired
     IngredientService ingredientService;
 
-    public DrinkService(DrinkRepository drinkRepository) {
+    public DrinkService(DrinkRepository drinkRepository, IngredientRepository ingredientRepository, IngredientService ingredientService) {
         this.drinkRepository = drinkRepository;
-    }
-
-    public ResponseEntity<byte[]> getDrinkImage(Long drinkId, HttpServletRequest request){
-
-        FileDocument document = drinkRepository.findById(drinkId).get().getPicture();
-
-//        this mediaType decides witch type you accept if you only accept 1 type
-//        MediaType contentType = MediaType.IMAGE_JPEG;
-//        this is going to accept multiple types
-
-        String mimeType = request.getServletContext().getMimeType(document.getFileName());
-
-//        for download attachment use next line
-//        return ResponseEntity.ok().contentType(contentType).header(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=" + resource.getFilename()).body(resource);
-//        for showing image in browser
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + document.getFileName()).body(document.getDocFile());
-
+        this.ingredientRepository = ingredientRepository;
+        this.ingredientService = ingredientService;
     }
 
     public List<DrinkDto> getAllDrinks() {
@@ -56,7 +45,7 @@ public class DrinkService {
     public DrinkDto getDrinkById(Long id) {
         Optional<Drink> DrinkOptional = drinkRepository.findById(id);
         if (!DrinkOptional.isPresent()) {
-            throw new RecordNotFoundException("Drink not found");
+            throw new RecordNotFoundException("No drink found");
         } else {
             Drink drink = DrinkOptional.get();
             DrinkDto drinkDto = fromDrink(drink);
@@ -89,7 +78,7 @@ public class DrinkService {
         drink.setName(drinkDto.getName() + " - Custom drink");
         drinkRepository.save(drink);
         Drink drinkSaved = drinkRepository.findById(drink.getId()).get();
-        drinkSaved.setPrice(getDrinkPrice(drinkSaved.getId()));
+        drinkSaved.setPrice(this.getDrinkPrice(drinkSaved.getId()));
         drinkRepository.save(drinkSaved);
         return drink;
 
@@ -105,17 +94,12 @@ public class DrinkService {
         return drinkDto;
     }
 
-    private Drink toDrink(CreateDrinkDto drinkDto){
+    private Drink toDrink(DrinkDto drinkDto){
         Drink drink = new Drink();
-        drink.setId(drink.getId());
+        drink.setId(drinkDto.getId());
         drink.setName(drinkDto.getName());
-        Long[] ingredientIds = drinkDto.getIngredients();
-        List<Ingredient> list = new ArrayList<>();
-        for (Long ingredientId : ingredientIds){
-            Ingredient ingredient = ingredientService.getIngredientById(ingredientId);
-            list.add(ingredient);
-        }
-        drink.setIngredients(list);
+        drink.setIngredients(drinkDto.getIngredients());
+        drink.setPrice(drinkDto.getPrice());
         return drink;
     }
 
@@ -132,6 +116,43 @@ public class DrinkService {
         drink.setIngredients(list);
 
         return drink;
+    }
+    private void updatePrice(Long id){
+        Drink drink = toDrink(getDrinkById(id));
+        drink.setPrice(getDrinkPrice(drink.getId()));
+        drinkRepository.save(drink);
+
+    }
+
+    public void addIngredient(Long drinkId, Long ingredientId) {
+        Optional<Drink> drinkOptional = drinkRepository.findById(drinkId);
+        if (drinkOptional.isPresent()){
+            Ingredient ingredient = ingredientService.getIngredientById(ingredientId);
+                Drink drink = drinkOptional.get();
+                drink.addIngredient(ingredient);
+                drinkRepository.save(drink);
+                updatePrice(drinkId);
+        } else throw new RecordNotFoundException("Drink not found");
+
+    }
+
+    public void removeIngredient(Long drinkId, Long ingredientId) {
+        Optional<Drink> drinkOptional = drinkRepository.findById(drinkId);
+        if (drinkOptional.isPresent()){
+            Ingredient ingredient = ingredientService.getIngredientById(ingredientId);
+            Drink drink = drinkOptional.get();
+            drink.removeIngredient(ingredient);
+            drinkRepository.save(drink);
+            updatePrice(drinkId);
+        } else throw new RecordNotFoundException("Drink not found");
+
+    }
+
+    public void deleteDrink(Long id) {
+        Optional<Drink> drinkOptional = drinkRepository.findById(id);
+        if (drinkOptional.isPresent()) {
+            drinkRepository.delete(drinkOptional.get());
+        } else throw new RecordNotFoundException("Drink not found");
     }
 }
 

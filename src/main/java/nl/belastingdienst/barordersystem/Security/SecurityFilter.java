@@ -29,8 +29,7 @@ public class SecurityFilter {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){return new BCryptPasswordEncoder();}
+
 
 
     @Bean
@@ -39,7 +38,34 @@ public class SecurityFilter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/authenticate").permitAll()
-                .antMatchers("/drink").hasRole("Owner")
+
+                .antMatchers("/barkeeper/**").hasRole("STAFF")
+
+                .antMatchers("/customer/**").hasRole("STAFF")
+
+                .antMatchers("/drink").hasRole("CUSTOMER")
+                .antMatchers("/drink/price/{id}").hasRole("CUSTOMER")
+                .antMatchers("/drink/{id}").hasRole("CUSTOMER")
+                .antMatchers("/drink/createCustom").hasRole("CUSTOMER")
+                .antMatchers("/drink/**").hasRole("STAFF")
+
+                .antMatchers("/ingredient").hasRole("CUSTOMER")
+                .antMatchers("/ingredient/**").hasRole("STAFF")
+
+                .antMatchers("/order/create").hasRole("CUSTOMER")
+                .antMatchers("/order/status/{id}").hasRole("CUSTOMER")
+                .antMatchers("/order/**").hasRole("STAFF")
+
+                .antMatchers("/drinkimage/{id}").hasRole("CUSTOMER")
+                .antMatchers("/getInvoices/{id}").hasRole("CUSTOMER")
+                .antMatchers("/upload").hasRole("STAFF")
+                .antMatchers("/download/{filename}").permitAll()
+                .antMatchers("/multiple/upload/db").hasRole("STAFF")
+                .antMatchers("/getAll").hasRole("STAFF")
+
+                .antMatchers("/users/**").hasRole("STAFF")
+
+                .antMatchers("/**").denyAll()
                 .and()
                 .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

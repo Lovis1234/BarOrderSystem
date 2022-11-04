@@ -37,35 +37,13 @@ public class DrinkController {
         return ResponseEntity.ok(price);
     }
 
-    @GetMapping("/image/{id}")
-    ResponseEntity<byte[]> getDrinkImageByDrinkId(@PathVariable Long id, HttpServletRequest request) {
-
-        return drinkService.getDrinkImage(id, request);
-    }
-
     @GetMapping(value = "/{id}")
     public ResponseEntity<DrinkDto> getOneDrink(@PathVariable Long id){
         DrinkDto drinkDto = drinkService.getDrinkById(id);
         return ResponseEntity.ok(drinkDto);
     }
 
-    @PostMapping(value = "/create")
-    public ResponseEntity<Object> createDrink(@Valid @RequestBody CreateDrinkDto drinkDto, BindingResult br){
-        StringBuilder sb = new StringBuilder();
-        if(br.hasErrors()){
-            for(FieldError error : br.getFieldErrors()){
-                sb.append(error.getField() + ": ");
-                sb.append(error.getDefaultMessage());
-                sb.append("\n");
-            }
-            return new ResponseEntity<>(sb.toString(), HttpStatus.BAD_REQUEST);
-        } else {
-            Drink newDrink = drinkService.createDrink(drinkDto);
-            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(newDrink.getId()).toUri();
-            return ResponseEntity.created(location).build();
-        }
-    }
+
     @PostMapping(value = "/createCustom")
     public ResponseEntity<String> createCustomDrink(@Valid @RequestBody CreateDrinkDto drinkDto, BindingResult br){
         StringBuilder sb = new StringBuilder();
@@ -84,16 +62,50 @@ public class DrinkController {
             return ResponseEntity.ok(newDrink.getName() + " is nu te bestellen voor €" + df.format(newDrink.getPrice()) );
         }
     }
-    @GetMapping(value = "/{id}2")
-    public ResponseEntity<DrinkDto> AddIngredientToDrink(@PathVariable Long id){
-        DrinkDto drinkDto = drinkService.getDrinkById(id);
-        return ResponseEntity.ok(drinkDto);
-    }
 
     @DeleteMapping(value = "/deleteCustomDrinks")
     public ResponseEntity<String> deleteCustomDrinks(){
         Long deleted = drinkService.deleteCustomDrinks();
         return ResponseEntity.ok("Deleted " + deleted + " custom drink(s).");
+    }
+    @PutMapping(value = "/addIngredientToDrink")
+    public ResponseEntity<String> addIngredient(@RequestParam("drinkId") Long drinkId, @RequestParam("ingredientId") Long ingredientId)
+        {
+
+                drinkService.addIngredient(drinkId, ingredientId);
+                return ResponseEntity.ok().build();
+
+        }
+
+    @PutMapping(value = "/removeIngredientFromDrink")
+    public ResponseEntity<String> removeIngredient(@RequestParam("drinkId") Long drinkId, @RequestParam("ingredientId") Long ingredientId) {
+        {
+                drinkService.removeIngredient(drinkId, ingredientId);
+                return ResponseEntity.ok().build();
+
+        }
+    }
+    @PostMapping(value = "/create")
+    public ResponseEntity<Object> createDrink(@Valid @RequestBody CreateDrinkDto drinkDto, BindingResult br){
+        StringBuilder sb = new StringBuilder();
+        if(br.hasErrors()){
+            for(FieldError error : br.getFieldErrors()){
+                sb.append(error.getField() + ": ");
+                sb.append(error.getDefaultMessage());
+                sb.append("\n");
+            }
+            return new ResponseEntity<>(sb.toString(), HttpStatus.BAD_REQUEST);
+        } else {
+            Drink newDrink = drinkService.createDrink(drinkDto);
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(newDrink.getId()).toUri();
+            return ResponseEntity.created(location).build();
+        }
+    }
+    @DeleteMapping(value = "/delete/{id}")
+    public ResponseEntity<Object> deleteDink(@PathVariable("id") Long id) {
+        drinkService.deleteDrink(id);
+        return ResponseEntity.noContent().build();
     }
 
 

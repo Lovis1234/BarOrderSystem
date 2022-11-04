@@ -1,8 +1,11 @@
 package nl.belastingdienst.barordersystem.Controllers;
+import nl.belastingdienst.barordersystem.Dto.CreateDrinkDto;
 import nl.belastingdienst.barordersystem.Dto.CustomerDto;
+import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Models.FileDocument;
 import nl.belastingdienst.barordersystem.Services.CustomerService;
 import nl.belastingdienst.barordersystem.Services.DatabaseService;
+import nl.belastingdienst.barordersystem.Services.DrinkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +14,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -23,30 +27,18 @@ import java.util.List;
 @RequestMapping(value = "/customer")
 public class CustomerController {
 
-    CustomerService employeeService;
+    CustomerService customerService;
     @Autowired
     DatabaseService databaseService;
+    @Autowired
+    DrinkService drinkService;
 
-    public CustomerController(CustomerService employeeService){
-        this.employeeService = employeeService;
+    public CustomerController(CustomerService customerService){
+        this.customerService = customerService;
     }
-
-    @GetMapping("/getInvoices/{id}")
-    public void getAllFromDB(@PathVariable Long id, HttpServletResponse response) throws IOException {
-        String[] list = databaseService.getALlFromCustomer(id);
-        databaseService.getZipDownload(list,response);
-    }
-
-    @GetMapping(value = "")
-    public ResponseEntity<List<CustomerDto>> getAllCustomers(){
-        List<CustomerDto> employeeDtos = employeeService.getAllCustomers();
-        return ResponseEntity.ok(employeeDtos);
-    }
-
-
 
     @PostMapping(value = "/create")
-    public ResponseEntity<Object> createCustomer(@Valid @RequestBody CustomerDto employeeDto, BindingResult br){
+    public ResponseEntity<Object> createCustomer(@Valid @RequestBody CustomerDto customerDto, BindingResult br){
         StringBuilder sb = new StringBuilder();
         if(br.hasErrors()){
             for(FieldError error : br.getFieldErrors()){
@@ -56,11 +48,22 @@ public class CustomerController {
             }
             return new ResponseEntity<>(sb.toString(), HttpStatus.BAD_REQUEST);
         } else {
-            CustomerDto newCustomerDto = employeeService.createCustomer(employeeDto);
+            CustomerDto newCustomerDto = customerService.createCustomer(customerDto);
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                     .buildAndExpand(newCustomerDto.getId()).toUri();
             return ResponseEntity.created(location).build();
         }
+    }
+
+    @GetMapping(value = "")
+    public ResponseEntity<List<CustomerDto>> getAllCustomers(){
+        List<CustomerDto> customerDtos = customerService.getAllCustomers();
+        return ResponseEntity.ok(customerDtos);
+    }
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Object> deleteCustomer(@PathVariable("id") Long id) {
+        customerService.deleteCustomer(id);
+        return ResponseEntity.noContent().build();
     }
 
 

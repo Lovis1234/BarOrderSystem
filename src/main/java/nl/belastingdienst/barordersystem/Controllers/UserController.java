@@ -3,6 +3,7 @@ package nl.belastingdienst.barordersystem.Controllers;
 
 import nl.belastingdienst.barordersystem.Dto.UserDto;
 import nl.belastingdienst.barordersystem.Exceptions.BadRequestException;
+import nl.belastingdienst.barordersystem.Services.CustomerService;
 import nl.belastingdienst.barordersystem.Services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import java.util.Map;
 public class UserController {
 
     private UserService userService;
+
 
     public UserController(UserService userService){
         this.userService =userService;
@@ -41,11 +43,24 @@ public class UserController {
 
     }
 
-    @PostMapping(value = "")
+    @PostMapping(value = "/customer/create")
     public ResponseEntity<UserDto> createUser(@RequestBody UserDto dto) {;
-
         String newUsername = userService.createUser(dto);
-        userService.addAuthority(newUsername, "ROLE_USER");
+        userService.addAuthority(newUsername, "ROLE_CUSTOMER");
+
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
+                .buildAndExpand(newUsername).toUri();
+
+        return ResponseEntity.created(location).build();
+    }
+
+    @PostMapping(value = "/staff/create")
+    public ResponseEntity<UserDto> createBarkeeper(@RequestBody UserDto dto) {;
+        String newUsername = userService.createUser(dto);
+        userService.addAuthority(newUsername, "ROLE_STAFF");
+        userService.addAuthority(newUsername, "ROLE_CUSTOMER");
+
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
                 .buildAndExpand(newUsername).toUri();
@@ -70,18 +85,6 @@ public class UserController {
     @GetMapping(value = "/{username}/authorities")
     public ResponseEntity<Object> getUserAuthorities(@PathVariable("username") String username) {
         return ResponseEntity.ok().body(userService.getAuthorities(username));
-    }
-
-    @PostMapping(value = "/{username}/authorities")
-    public ResponseEntity<Object> addUserAuthority(@PathVariable("username") String username, @RequestBody Map<String, Object> fields) {
-        try {
-            String authorityName = (String) fields.get("authority");
-            userService.addAuthority(username, authorityName);
-            return ResponseEntity.noContent().build();
-        }
-        catch (Exception ex) {
-            throw new BadRequestException();
-        }
     }
 
     @DeleteMapping(value = "/{username}/authorities/{authority}")

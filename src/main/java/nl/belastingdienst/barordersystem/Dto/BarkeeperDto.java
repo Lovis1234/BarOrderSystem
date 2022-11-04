@@ -15,6 +15,5 @@ import java.util.List;
 public class BarkeeperDto {
     private Long id;
     private String name;
-    private List<FileDocument> invoices;
 
 }

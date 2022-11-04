@@ -16,4 +16,6 @@ public interface DrinkRepository extends JpaRepository<Drink, Long> {
     Double findPriceDrink(Long id);
     @Transactional
     Long deleteByPermanent(boolean permanent);
+
+    Drink getById(Long id);
 }
