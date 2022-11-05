@@ -1,6 +1,7 @@
 package nl.belastingdienst.barordersystem.Controllers;
 
 import nl.belastingdienst.barordersystem.Dto.IngredientDto;
+import nl.belastingdienst.barordersystem.Dto.UserDto;
 import nl.belastingdienst.barordersystem.Services.IngredientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +53,13 @@ public class IngredientController {
     @DeleteMapping(value = "/delete/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable("id") Long id) {
         ingredientService.deleteIngredient(id);
+        return ResponseEntity.noContent().build();
+    }
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UserDto> updateIngredient(@PathVariable("id") Long id, @RequestBody IngredientDto dto) {
+
+        ingredientService.updateIngredient(id, dto);
+
         return ResponseEntity.noContent().build();
     }
 

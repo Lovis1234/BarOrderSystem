@@ -36,9 +36,12 @@ class IngredientServiceTest {
 
     private Ingredient ingredient;
 
+    private IngredientDto ingredientDto;
+
     @BeforeEach
     void setup(){
         ingredient = new Ingredient(1L,"Test",10);
+        ingredientDto = new IngredientDto(1L,"Test",10.0);
 
     }
 
@@ -78,7 +81,6 @@ class IngredientServiceTest {
 
     @Test
     void createIngredient() {
-        IngredientDto input = new IngredientDto(1L,"Test",10.0);
         Ingredient expected = new Ingredient(1L,"Test",10.0);
 
 
@@ -87,7 +89,7 @@ class IngredientServiceTest {
                 .when(ingredientRepository.save(ingredient))
                 .thenReturn(ingredient);
 
-        IngredientDto actual = ingredientService.createIngredient(input);
+        IngredientDto actual = ingredientService.createIngredient(ingredientDto);
 
         assertEquals(actual.getId(),expected.getId());
         assertEquals(actual.getName(),expected.getName());
@@ -105,6 +107,18 @@ class IngredientServiceTest {
         ingredientService.deleteIngredient(ingredient.getId());
 
         Mockito.verify(ingredientRepository, Mockito.times(1)).delete(ingredient);
+        assertThrows(RecordNotFoundException.class,
+                ()->{ingredientService.deleteIngredient(ingredient.getId()+1);},
+                "Ingredient not found");
+    }
+    @Test
+    void updateIngredient(){
+        Mockito
+                .when(ingredientRepository.findById(ingredient.getId()))
+                .thenReturn(Optional.of(ingredient));
+        ingredientService.updateIngredient(ingredient.getId(),ingredientDto);
+
+        Mockito.verify(ingredientRepository, Mockito.times(1)).save(ingredient);
         assertThrows(RecordNotFoundException.class,
                 ()->{ingredientService.deleteIngredient(ingredient.getId()+1);},
                 "Ingredient not found");

@@ -25,9 +25,18 @@ public class UploadDownloadWithDatabaseController {
         this.databaseService = databaseService;
     }
 
-    @PostMapping("/upload")
-    public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("type") String type, @RequestParam("destinationId") Long id) throws IOException {
-        FileDocument fileDocument = databaseService.uploadFileDocument(file,type,id);
+    @PostMapping("/uploadInvoice")
+    public FileUploadResponse invoiceUpload(@RequestParam("file") MultipartFile file, @RequestParam("destinationId") Long id) throws IOException {
+        FileDocument fileDocument = databaseService.uploadInvoice(file,id);
+        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFromDB/").path(Objects.requireNonNull(fileDocument.getFileName())).toUriString();
+        String contentType = file.getContentType();
+
+        return new FileUploadResponse(fileDocument.getFileName(), contentType, url );
+    }
+
+    @PostMapping("/uploadPicture")
+    public FileUploadResponse pictureUpload(@RequestParam("file") MultipartFile file,  @RequestParam("destinationId") Long id) throws IOException {
+        FileDocument fileDocument = databaseService.uploadPicture(file,id);
         String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFromDB/").path(Objects.requireNonNull(fileDocument.getFileName())).toUriString();
         String contentType = file.getContentType();
 

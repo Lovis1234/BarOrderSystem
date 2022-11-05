@@ -1,6 +1,7 @@
 package nl.belastingdienst.barordersystem.Controllers;
 
 import nl.belastingdienst.barordersystem.Dto.CustomerDto;
+import nl.belastingdienst.barordersystem.Dto.UserDto;
 import nl.belastingdienst.barordersystem.Services.CustomerService;
 import nl.belastingdienst.barordersystem.Services.DatabaseService;
 import nl.belastingdienst.barordersystem.Services.DrinkService;
@@ -56,6 +57,13 @@ public class CustomerController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> deleteCustomer(@PathVariable("id") Long id) {
         customerService.deleteCustomer(id);
+        return ResponseEntity.noContent().build();
+    }
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UserDto> updateCustomer(@PathVariable("id") Long id, @RequestBody CustomerDto dto) {
+
+        customerService.updateCustomer(id, dto);
+
         return ResponseEntity.noContent().build();
     }
 

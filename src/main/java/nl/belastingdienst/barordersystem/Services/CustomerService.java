@@ -2,8 +2,10 @@ package nl.belastingdienst.barordersystem.Services;
 
 import lombok.AllArgsConstructor;
 import nl.belastingdienst.barordersystem.Dto.CustomerDto;
+import nl.belastingdienst.barordersystem.Dto.UserDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Customer;
+import nl.belastingdienst.barordersystem.Models.User;
 import nl.belastingdienst.barordersystem.Repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
 
@@ -58,5 +60,13 @@ public class CustomerService {
         } else throw new RecordNotFoundException("Customer not found");
     }
 
+    public void updateCustomer(Long id, CustomerDto dto) {
+            if (customerRepository.findById(id).isEmpty()) throw new RecordNotFoundException("Customer not found");
+            Customer customer = customerRepository.findById(id).get();
+            customer.setName(dto.getName());
+            customer.setId(dto.getId());
+            customer.setInvoices(dto.getInvoices());
+            customerRepository.save(customer);
+    }
 }
 

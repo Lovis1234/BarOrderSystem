@@ -56,12 +56,13 @@ public class SecurityFilter {
 
                 .antMatchers("/drinkimage/{id}").hasRole("CUSTOMER")
                 .antMatchers("/getInvoices/{id}").hasRole("CUSTOMER")
-                .antMatchers("/upload").hasRole("STAFF")
+                .antMatchers("/uploadInvoice").hasRole("STAFF")
+                .antMatchers("/uploadPicture").hasRole("STAFF")
                 .antMatchers("/download/{filename}").permitAll()
                 .antMatchers("/multiple/upload/db").hasRole("STAFF")
                 .antMatchers("/getAll").hasRole("STAFF")
 
-                .antMatchers("/users/create").permitAll()
+                .antMatchers("/users/register").permitAll()
                 .antMatchers("/users/**").hasRole("STAFF")
 
 

@@ -40,7 +40,7 @@ public class UserController {
 
     }
 
-    @PostMapping(value = "/customer/create")
+    @PostMapping(value = "/register")
     public ResponseEntity<UserDto> createUser(@RequestBody UserDto dto) {;
         String newUsername = userService.createUser(dto);
         userService.addAuthority(newUsername, "ROLE_CUSTOMER");

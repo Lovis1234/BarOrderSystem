@@ -1,7 +1,9 @@
 package nl.belastingdienst.barordersystem.Services;
 
 import nl.belastingdienst.barordersystem.Dto.IngredientDto;
+import nl.belastingdienst.barordersystem.Dto.UserDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
+import nl.belastingdienst.barordersystem.Models.Customer;
 import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Repositories.IngredientRepository;
 import org.springframework.stereotype.Service;
@@ -64,6 +66,16 @@ public class IngredientService {
         Optional<Ingredient> ingredientOptional = ingredientRepository.findById(id);
         if (ingredientOptional.isPresent()) {
             ingredientRepository.delete(ingredientOptional.get());
+        } else throw new RecordNotFoundException("Ingredient not found");
+    }
+
+    public void updateIngredient(Long id, IngredientDto dto) {
+        if (ingredientRepository.findById(id).isPresent()){
+        Ingredient ingredient = ingredientRepository.findById(id).get();
+        ingredient.setName(dto.getName());
+        ingredient.setPrice(dto.getPrice());
+        ingredient.setId(dto.getId());
+        ingredientRepository.save(ingredient);
         } else throw new RecordNotFoundException("Ingredient not found");
     }
 }

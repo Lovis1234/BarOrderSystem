@@ -1,6 +1,7 @@
 package nl.belastingdienst.barordersystem.Controllers;
 
 import nl.belastingdienst.barordersystem.Dto.BarkeeperDto;
+import nl.belastingdienst.barordersystem.Dto.UserDto;
 import nl.belastingdienst.barordersystem.Services.BarkeeperService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +52,13 @@ public class BarkeeperController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> deleteBarkeeper(@PathVariable("id") Long id) {
         barkeeperService.deleteBarkeeper(id);
+        return ResponseEntity.noContent().build();
+    }
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UserDto> updateBarkeeper(@PathVariable("id") Long id, @RequestBody BarkeeperDto dto) {
+
+        barkeeperService.updateBarkeeper(id, dto);
+
         return ResponseEntity.noContent().build();
     }
 }

@@ -60,24 +60,30 @@ public class DatabaseService {
     }
 
 
-    public FileDocument uploadFileDocument(MultipartFile file,String type, Long destinationId) throws IOException {
+    private FileDocument uploadFileDocument(MultipartFile file) throws IOException {
         Long count = doc.count();
-        String name = StringUtils.cleanPath(Objects.requireNonNull(count + file.getOriginalFilename()));
+        String name = StringUtils.cleanPath(count + file.getOriginalFilename());
         FileDocument fileDocument = new FileDocument();
         fileDocument.setFileName(name);
         fileDocument.setDocFile(file.getBytes());
         doc.save(fileDocument);
 
-        if (type.equals("invoice")){
-            insertInvoice(destinationId,fileDocument);
-        } else if (type.equals("drinkImage")) {
-            Drink drink = drinkRepository.findById(destinationId).get();
-            drink.setPicture(fileDocument);
-            drinkRepository.save(drink);
-        }
+
 
         return fileDocument;
 
+    }
+    public FileDocument uploadInvoice(MultipartFile file, Long destinationId) throws IOException {
+        FileDocument fileDocument = uploadFileDocument(file);
+        insertInvoice(destinationId,fileDocument);
+        return fileDocument;
+    }
+    public FileDocument uploadPicture(MultipartFile file, Long destinationId) throws IOException {
+        FileDocument fileDocument = uploadFileDocument(file);
+        Drink drink = drinkRepository.findById(destinationId).get();
+        drink.setPicture(fileDocument);
+        drinkRepository.save(drink);
+        return fileDocument;
     }
     private void insertInvoice(Long customerId, FileDocument file) {
         Customer customer = customerRepository.findById(customerId).get();
