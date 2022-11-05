@@ -3,19 +3,12 @@ package nl.belastingdienst.barordersystem.Services;
 import lombok.AllArgsConstructor;
 import nl.belastingdienst.barordersystem.Dto.CustomerDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
-import nl.belastingdienst.barordersystem.Models.*;
+import nl.belastingdienst.barordersystem.Models.Customer;
 import nl.belastingdienst.barordersystem.Repositories.CustomerRepository;
-import nl.belastingdienst.barordersystem.Repositories.DocFileRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 @AllArgsConstructor
 @Service
@@ -32,24 +25,6 @@ public class CustomerService {
         }
         return customerDtos;
     }
-    public CustomerDto getCustomerById(Long id) {
-        Optional<Customer> CustomerOptional = customerRepository.findById(id);
-        if (CustomerOptional.isEmpty()) {
-            throw new RecordNotFoundException("Customer not found");
-        } else {
-            Customer customer = CustomerOptional.get();
-            return fromCustomer(customer);
-        }
-    }
-public void preload(Customer customer)
-        throws IOException
-{
-    customerRepository.save(customer);
-}
-
-
-
-
 
     public CustomerDto createCustomer(CustomerDto customerDto) {
         Customer customer = toCustomer(customerDto);

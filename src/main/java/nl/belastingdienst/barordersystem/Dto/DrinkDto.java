@@ -1,8 +1,9 @@
 package nl.belastingdienst.barordersystem.Dto;
 
-import javax.persistence.*;
-import lombok.*;
-import nl.belastingdienst.barordersystem.Models.FileDocument;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nl.belastingdienst.barordersystem.Models.Ingredient;
 
 import java.util.List;

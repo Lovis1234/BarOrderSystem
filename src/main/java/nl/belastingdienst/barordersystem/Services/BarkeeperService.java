@@ -3,7 +3,6 @@ package nl.belastingdienst.barordersystem.Services;
 import nl.belastingdienst.barordersystem.Dto.BarkeeperDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Barkeeper;
-import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Repositories.BarkeeperRepository;
 import org.springframework.stereotype.Service;
 
@@ -26,15 +25,6 @@ public class BarkeeperService {
             barkeeperDtos.add(fromBarkeeper(barkeeper));
         }
         return barkeeperDtos;
-    }
-    public Barkeeper getBarkeeperById(Long id) {
-        Optional<Barkeeper> BarkeeperOptional = barkeeperRepository.findById(id);
-        if (!BarkeeperOptional.isPresent()) {
-            throw new RecordNotFoundException("Barkeeper not found");
-        } else {
-            Barkeeper barkeeper = BarkeeperOptional.get();
-            return barkeeper;
-        }
     }
     public BarkeeperDto createBarkeeper(BarkeeperDto barkeeperDto) {
         Barkeeper barkeeper = toBarkeeper(barkeeperDto);

@@ -1,13 +1,7 @@
 package nl.belastingdienst.barordersystem.Controllers;
 
-import nl.belastingdienst.barordersystem.Dto.CustomerDto;
 import nl.belastingdienst.barordersystem.Dto.BarkeeperDto;
-import nl.belastingdienst.barordersystem.Dto.OrderLineRecieveDto;
-import nl.belastingdienst.barordersystem.Models.Status;
-import nl.belastingdienst.barordersystem.Services.CustomerService;
 import nl.belastingdienst.barordersystem.Services.BarkeeperService;
-import nl.belastingdienst.barordersystem.Services.OrderLineService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -15,7 +9,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;

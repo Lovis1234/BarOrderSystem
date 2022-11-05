@@ -2,8 +2,6 @@ package nl.belastingdienst.barordersystem.Controllers;
 
 
 import nl.belastingdienst.barordersystem.Dto.UserDto;
-import nl.belastingdienst.barordersystem.Exceptions.BadRequestException;
-import nl.belastingdienst.barordersystem.Services.CustomerService;
 import nl.belastingdienst.barordersystem.Services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +9,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
 @CrossOrigin
 @RestController

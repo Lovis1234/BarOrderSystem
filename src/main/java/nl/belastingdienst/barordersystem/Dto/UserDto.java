@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nl.belastingdienst.barordersystem.Models.Authority;
-import nl.belastingdienst.barordersystem.Models.Customer;
 
 import java.util.Set;
 @NoArgsConstructor

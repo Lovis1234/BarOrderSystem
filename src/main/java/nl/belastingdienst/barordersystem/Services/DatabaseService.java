@@ -1,13 +1,9 @@
 package nl.belastingdienst.barordersystem.Services;
 
 
-import nl.belastingdienst.barordersystem.Dto.DrinkDto;
-import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
-import nl.belastingdienst.barordersystem.FileUploadResponse.FileUploadResponse;
 import nl.belastingdienst.barordersystem.Models.Customer;
 import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Models.FileDocument;
-import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Repositories.CustomerRepository;
 import nl.belastingdienst.barordersystem.Repositories.DocFileRepository;
 import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
@@ -29,7 +25,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 

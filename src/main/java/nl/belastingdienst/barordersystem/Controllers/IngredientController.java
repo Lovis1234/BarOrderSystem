@@ -1,4 +1,5 @@
 package nl.belastingdienst.barordersystem.Controllers;
+
 import nl.belastingdienst.barordersystem.Dto.IngredientDto;
 import nl.belastingdienst.barordersystem.Services.IngredientService;
 import org.springframework.http.HttpStatus;
@@ -8,8 +9,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
