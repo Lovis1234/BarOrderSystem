@@ -1,13 +1,8 @@
 package nl.belastingdienst.barordersystem.Controllers;
 
-import nl.belastingdienst.barordersystem.Dto.CustomerDto;
 import nl.belastingdienst.barordersystem.Dto.BarkeeperDto;
-import nl.belastingdienst.barordersystem.Dto.OrderLineRecieveDto;
-import nl.belastingdienst.barordersystem.Models.Status;
-import nl.belastingdienst.barordersystem.Services.CustomerService;
+import nl.belastingdienst.barordersystem.Dto.UserDto;
 import nl.belastingdienst.barordersystem.Services.BarkeeperService;
-import nl.belastingdienst.barordersystem.Services.OrderLineService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -15,7 +10,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -58,6 +52,13 @@ public class BarkeeperController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> deleteBarkeeper(@PathVariable("id") Long id) {
         barkeeperService.deleteBarkeeper(id);
+        return ResponseEntity.noContent().build();
+    }
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UserDto> updateBarkeeper(@PathVariable("id") Long id, @RequestBody BarkeeperDto dto) {
+
+        barkeeperService.updateBarkeeper(id, dto);
+
         return ResponseEntity.noContent().build();
     }
 }

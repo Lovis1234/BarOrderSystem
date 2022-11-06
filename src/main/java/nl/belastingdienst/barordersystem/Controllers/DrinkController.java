@@ -1,4 +1,5 @@
 package nl.belastingdienst.barordersystem.Controllers;
+
 import nl.belastingdienst.barordersystem.Dto.CreateDrinkDto;
 import nl.belastingdienst.barordersystem.Dto.DrinkDto;
 import nl.belastingdienst.barordersystem.Models.Drink;
@@ -10,10 +11,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
-import java.text.DecimalFormat;
 import java.util.List;
 @RestController
 @RequestMapping(value = "/drink")
@@ -56,10 +55,7 @@ public class DrinkController {
             return new ResponseEntity<>(sb.toString(), HttpStatus.BAD_REQUEST);
         } else {
             Drink newDrink = drinkService.createCustomDrink(drinkDto);
-            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(newDrink.getId()).toUri();
-            DecimalFormat df = new DecimalFormat("###.##");
-            return ResponseEntity.ok(newDrink.getName() + " is nu te bestellen voor €" + df.format(newDrink.getPrice()) );
+            return ResponseEntity.ok(newDrink.getName() + " is nu te bestellen voor €" + newDrink.getPrice());
         }
     }
 
@@ -71,7 +67,6 @@ public class DrinkController {
     @PutMapping(value = "/addIngredientToDrink")
     public ResponseEntity<String> addIngredient(@RequestParam("drinkId") Long drinkId, @RequestParam("ingredientId") Long ingredientId)
         {
-
                 drinkService.addIngredient(drinkId, ingredientId);
                 return ResponseEntity.ok().build();
 

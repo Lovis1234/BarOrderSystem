@@ -2,9 +2,9 @@ package nl.belastingdienst.barordersystem.Controllers;
 
 
 import nl.belastingdienst.barordersystem.FileUploadResponse.FileUploadResponse;
+import nl.belastingdienst.barordersystem.Models.Enums.TypeDocument;
 import nl.belastingdienst.barordersystem.Models.FileDocument;
 import nl.belastingdienst.barordersystem.Services.DatabaseService;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 @CrossOrigin
@@ -28,11 +27,10 @@ public class UploadDownloadWithDatabaseController {
     }
 
     @PostMapping("/upload")
-    public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("type") String type, @RequestParam("destinationId") Long id) throws IOException {
-        FileDocument fileDocument = databaseService.uploadFileDocument(file,type,id);
+    public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam TypeDocument type, @RequestParam("destinationId") Long id) throws IOException {
+        FileDocument fileDocument = databaseService.uploadFileDocument(file,type, id);
         String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFromDB/").path(Objects.requireNonNull(fileDocument.getFileName())).toUriString();
         String contentType = file.getContentType();
-
         return new FileUploadResponse(fileDocument.getFileName(), contentType, url );
     }
 

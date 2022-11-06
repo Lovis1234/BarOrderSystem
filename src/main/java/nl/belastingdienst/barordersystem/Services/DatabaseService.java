@@ -1,13 +1,11 @@
 package nl.belastingdienst.barordersystem.Services;
 
 
-import nl.belastingdienst.barordersystem.Dto.DrinkDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
-import nl.belastingdienst.barordersystem.FileUploadResponse.FileUploadResponse;
 import nl.belastingdienst.barordersystem.Models.Customer;
 import nl.belastingdienst.barordersystem.Models.Drink;
+import nl.belastingdienst.barordersystem.Models.Enums.TypeDocument;
 import nl.belastingdienst.barordersystem.Models.FileDocument;
-import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Repositories.CustomerRepository;
 import nl.belastingdienst.barordersystem.Repositories.DocFileRepository;
 import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
@@ -29,7 +27,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -61,21 +62,25 @@ public class DatabaseService {
     }
 
 
-    public FileDocument uploadFileDocument(MultipartFile file,String type, Long destinationId) throws IOException {
+    public FileDocument uploadFileDocument(MultipartFile file, TypeDocument type, Long destinationId) throws IOException {
         Long count = doc.count();
-        String name = StringUtils.cleanPath(Objects.requireNonNull(count + file.getOriginalFilename()));
+        String name = StringUtils.cleanPath(count + file.getOriginalFilename());
         FileDocument fileDocument = new FileDocument();
         fileDocument.setFileName(name);
         fileDocument.setDocFile(file.getBytes());
         doc.save(fileDocument);
 
-        if (type.equals("invoice")){
+        if (type == TypeDocument.INVOICE){
             insertInvoice(destinationId,fileDocument);
-        } else if (type.equals("drinkImage")) {
-            Drink drink = drinkRepository.findById(destinationId).get();
-            drink.setPicture(fileDocument);
-            drinkRepository.save(drink);
+        } else if (type == TypeDocument.DRINKPICTURE) {
+            if (drinkRepository.findById(destinationId).isPresent()){
+                Drink drink = drinkRepository.findById(destinationId).get();
+                drink.setPicture(fileDocument);
+                drinkRepository.save(drink);
+        } else throw new RecordNotFoundException("Drink not found!");
+
         }
+
 
         return fileDocument;
 

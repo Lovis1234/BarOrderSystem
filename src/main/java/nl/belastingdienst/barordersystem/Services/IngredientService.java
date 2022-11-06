@@ -66,5 +66,15 @@ public class IngredientService {
             ingredientRepository.delete(ingredientOptional.get());
         } else throw new RecordNotFoundException("Ingredient not found");
     }
+
+    public void updateIngredient(Long id, IngredientDto dto) {
+        if (ingredientRepository.findById(id).isPresent()){
+        Ingredient ingredient = ingredientRepository.findById(id).get();
+        ingredient.setName(dto.getName());
+        ingredient.setPrice(dto.getPrice());
+        ingredient.setId(dto.getId());
+        ingredientRepository.save(ingredient);
+        } else throw new RecordNotFoundException("Ingredient not found");
+    }
 }
 

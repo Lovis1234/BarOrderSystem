@@ -1,11 +1,7 @@
 package nl.belastingdienst.barordersystem.Services;
 
-import nl.belastingdienst.barordersystem.Dto.CreateDrinkDto;
-import nl.belastingdienst.barordersystem.Dto.IngredientDto;
 import nl.belastingdienst.barordersystem.Dto.IngredientDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
-import nl.belastingdienst.barordersystem.Models.Drink;
-import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Repositories.IngredientRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,8 +19,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.Silent.class)
 class IngredientServiceTest {
@@ -36,9 +32,12 @@ class IngredientServiceTest {
 
     private Ingredient ingredient;
 
+    private IngredientDto ingredientDto;
+
     @BeforeEach
     void setup(){
         ingredient = new Ingredient(1L,"Test",10);
+        ingredientDto = new IngredientDto(1L,"Test",10.0);
 
     }
 
@@ -78,7 +77,6 @@ class IngredientServiceTest {
 
     @Test
     void createIngredient() {
-        IngredientDto input = new IngredientDto(1L,"Test",10.0);
         Ingredient expected = new Ingredient(1L,"Test",10.0);
 
 
@@ -87,7 +85,7 @@ class IngredientServiceTest {
                 .when(ingredientRepository.save(ingredient))
                 .thenReturn(ingredient);
 
-        IngredientDto actual = ingredientService.createIngredient(input);
+        IngredientDto actual = ingredientService.createIngredient(ingredientDto);
 
         assertEquals(actual.getId(),expected.getId());
         assertEquals(actual.getName(),expected.getName());
@@ -105,6 +103,18 @@ class IngredientServiceTest {
         ingredientService.deleteIngredient(ingredient.getId());
 
         Mockito.verify(ingredientRepository, Mockito.times(1)).delete(ingredient);
+        assertThrows(RecordNotFoundException.class,
+                ()->{ingredientService.deleteIngredient(ingredient.getId()+1);},
+                "Ingredient not found");
+    }
+    @Test
+    void updateIngredient(){
+        Mockito
+                .when(ingredientRepository.findById(ingredient.getId()))
+                .thenReturn(Optional.of(ingredient));
+        ingredientService.updateIngredient(ingredient.getId(),ingredientDto);
+
+        Mockito.verify(ingredientRepository, Mockito.times(1)).save(ingredient);
         assertThrows(RecordNotFoundException.class,
                 ()->{ingredientService.deleteIngredient(ingredient.getId()+1);},
                 "Ingredient not found");

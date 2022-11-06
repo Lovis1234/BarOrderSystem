@@ -5,8 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
-import java.util.Arrays;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Lob;
 
 @Getter
 @Setter
@@ -23,12 +25,4 @@ public class FileDocument {
 
     @Lob
     private byte[] docFile;
-
-    @Override
-    public String toString() {
-        return "FileDocument{" +
-                "id=" + id +
-                ", fileName='" + fileName + '\'' +
-                '}';
-    }
 }

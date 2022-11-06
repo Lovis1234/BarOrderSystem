@@ -4,46 +4,30 @@ import nl.belastingdienst.barordersystem.Dto.CreateDrinkDto;
 import nl.belastingdienst.barordersystem.Dto.DrinkDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Drink;
-import nl.belastingdienst.barordersystem.Models.FileDocument;
 import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
 import nl.belastingdienst.barordersystem.Repositories.IngredientRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockServletContext;
-import org.springframework.security.config.saml2.RelyingPartyRegistrationsBeanDefinitionParser;
 
-import javax.servlet.http.HttpServletResponse;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
-import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
-import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class DrinkServiceTest {
 
     Drink drink;
-    Drink drinkWithIngredient;
     Ingredient ingredient;
     Ingredient ingredient2;
     @InjectMocks
@@ -57,8 +41,6 @@ class DrinkServiceTest {
     DrinkRepository drinkRepository;
     @Mock
     IngredientService ingredientService;
-    @Mock
-    IngredientRepository ingredientRepository;
 
     @BeforeEach
     public void setup(){

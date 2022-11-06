@@ -1,9 +1,11 @@
 package nl.belastingdienst.barordersystem.Services;
 
-import nl.belastingdienst.barordersystem.Dto.OrderLineSendDto;
 import nl.belastingdienst.barordersystem.Dto.OrderLineRecieveDto;
+import nl.belastingdienst.barordersystem.Dto.OrderLineSendDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
-import nl.belastingdienst.barordersystem.Models.*;
+import nl.belastingdienst.barordersystem.Models.Drink;
+import nl.belastingdienst.barordersystem.Models.OrderLine;
+import nl.belastingdienst.barordersystem.Models.Enums.Status;
 import nl.belastingdienst.barordersystem.Repositories.BarkeeperRepository;
 import nl.belastingdienst.barordersystem.Repositories.CustomerRepository;
 import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
@@ -86,13 +88,6 @@ public class OrderLineService {
             if (status == Status.PREPARING){
                 claimOrder(staffId,orderId);
             }
-    }
-
-    public OrderLineRecieveDto getOrdersCustomer(Long id){
-        if (orderRepository.findById(id).isPresent()) {
-            OrderLine orderLine = orderRepository.findById(id).get();
-            return fromOrderToOrderRecieveDto(orderLine);
-        } else throw new RecordNotFoundException("Order not found");
     }
 
 

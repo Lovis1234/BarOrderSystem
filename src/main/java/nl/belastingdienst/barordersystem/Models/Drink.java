@@ -1,14 +1,11 @@
 package nl.belastingdienst.barordersystem.Models;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
-
-import lombok.*;
-import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
-import nl.belastingdienst.barordersystem.Repositories.IngredientRepository;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.Query;
-
 import java.util.List;
 
 @Getter
@@ -38,17 +35,5 @@ public class Drink {
     }
     public void removeIngredient(Ingredient ingredient) {
         this.ingredients.remove(ingredient);
-    }
-
-    @Override
-    public String toString() {
-        return "Drink{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", picture=" + picture +
-                ", ingredients=" + ingredients +
-                ", permanent=" + permanent +
-                '}';
     }
 }

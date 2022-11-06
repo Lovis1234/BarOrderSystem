@@ -1,8 +1,7 @@
 package nl.belastingdienst.barordersystem.Controllers;
-import nl.belastingdienst.barordersystem.Dto.CreateDrinkDto;
+
 import nl.belastingdienst.barordersystem.Dto.CustomerDto;
-import nl.belastingdienst.barordersystem.Models.Drink;
-import nl.belastingdienst.barordersystem.Models.FileDocument;
+import nl.belastingdienst.barordersystem.Dto.UserDto;
 import nl.belastingdienst.barordersystem.Services.CustomerService;
 import nl.belastingdienst.barordersystem.Services.DatabaseService;
 import nl.belastingdienst.barordersystem.Services.DrinkService;
@@ -14,13 +13,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.net.URI;
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -63,6 +57,13 @@ public class CustomerController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> deleteCustomer(@PathVariable("id") Long id) {
         customerService.deleteCustomer(id);
+        return ResponseEntity.noContent().build();
+    }
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UserDto> updateCustomer(@PathVariable("id") Long id, @RequestBody CustomerDto dto) {
+
+        customerService.updateCustomer(id, dto);
+
         return ResponseEntity.noContent().build();
     }
 
