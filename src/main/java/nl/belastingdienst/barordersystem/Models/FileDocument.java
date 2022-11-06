@@ -25,12 +25,4 @@ public class FileDocument {
 
     @Lob
     private byte[] docFile;
-
-    @Override
-    public String toString() {
-        return "FileDocument{" +
-                "id=" + id +
-                ", fileName='" + fileName + '\'' +
-                '}';
-    }
 }

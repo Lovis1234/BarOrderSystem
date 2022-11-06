@@ -36,16 +36,4 @@ public class Drink {
     public void removeIngredient(Ingredient ingredient) {
         this.ingredients.remove(ingredient);
     }
-
-    @Override
-    public String toString() {
-        return "Drink{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", picture=" + picture +
-                ", ingredients=" + ingredients +
-                ", permanent=" + permanent +
-                '}';
-    }
 }
