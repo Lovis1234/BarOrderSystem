@@ -2,10 +2,8 @@ package nl.belastingdienst.barordersystem.Services;
 
 import lombok.AllArgsConstructor;
 import nl.belastingdienst.barordersystem.Dto.CustomerDto;
-import nl.belastingdienst.barordersystem.Dto.UserDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Customer;
-import nl.belastingdienst.barordersystem.Models.User;
 import nl.belastingdienst.barordersystem.Repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
 

@@ -2,6 +2,7 @@ package nl.belastingdienst.barordersystem.Controllers;
 
 
 import nl.belastingdienst.barordersystem.FileUploadResponse.FileUploadResponse;
+import nl.belastingdienst.barordersystem.Models.Enums.TypeDocument;
 import nl.belastingdienst.barordersystem.Models.FileDocument;
 import nl.belastingdienst.barordersystem.Services.DatabaseService;
 import org.springframework.http.ResponseEntity;
@@ -25,21 +26,11 @@ public class UploadDownloadWithDatabaseController {
         this.databaseService = databaseService;
     }
 
-    @PostMapping("/uploadInvoice")
-    public FileUploadResponse invoiceUpload(@RequestParam("file") MultipartFile file, @RequestParam("destinationId") Long id) throws IOException {
-        FileDocument fileDocument = databaseService.uploadInvoice(file,id);
+    @PostMapping("/upload")
+    public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam TypeDocument type, @RequestParam("destinationId") Long id) throws IOException {
+        FileDocument fileDocument = databaseService.uploadFileDocument(file,type, id);
         String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFromDB/").path(Objects.requireNonNull(fileDocument.getFileName())).toUriString();
         String contentType = file.getContentType();
-
-        return new FileUploadResponse(fileDocument.getFileName(), contentType, url );
-    }
-
-    @PostMapping("/uploadPicture")
-    public FileUploadResponse pictureUpload(@RequestParam("file") MultipartFile file,  @RequestParam("destinationId") Long id) throws IOException {
-        FileDocument fileDocument = databaseService.uploadPicture(file,id);
-        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFromDB/").path(Objects.requireNonNull(fileDocument.getFileName())).toUriString();
-        String contentType = file.getContentType();
-
         return new FileUploadResponse(fileDocument.getFileName(), contentType, url );
     }
 

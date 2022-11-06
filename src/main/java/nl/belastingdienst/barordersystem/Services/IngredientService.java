@@ -1,9 +1,7 @@
 package nl.belastingdienst.barordersystem.Services;
 
 import nl.belastingdienst.barordersystem.Dto.IngredientDto;
-import nl.belastingdienst.barordersystem.Dto.UserDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
-import nl.belastingdienst.barordersystem.Models.Customer;
 import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Repositories.IngredientRepository;
 import org.springframework.stereotype.Service;

@@ -5,7 +5,7 @@ import nl.belastingdienst.barordersystem.Dto.OrderLineSendDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Models.OrderLine;
-import nl.belastingdienst.barordersystem.Models.Status;
+import nl.belastingdienst.barordersystem.Models.Enums.Status;
 import nl.belastingdienst.barordersystem.Repositories.BarkeeperRepository;
 import nl.belastingdienst.barordersystem.Repositories.CustomerRepository;
 import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;

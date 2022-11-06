@@ -3,7 +3,6 @@ package nl.belastingdienst.barordersystem.Services;
 import nl.belastingdienst.barordersystem.Dto.BarkeeperDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Barkeeper;
-import nl.belastingdienst.barordersystem.Models.Customer;
 import nl.belastingdienst.barordersystem.Repositories.BarkeeperRepository;
 import org.springframework.stereotype.Service;
 

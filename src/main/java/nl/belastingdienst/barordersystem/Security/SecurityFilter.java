@@ -56,8 +56,7 @@ public class SecurityFilter {
 
                 .antMatchers("/drinkimage/{id}").hasRole("CUSTOMER")
                 .antMatchers("/getInvoices/{id}").hasRole("CUSTOMER")
-                .antMatchers("/uploadInvoice").hasRole("STAFF")
-                .antMatchers("/uploadPicture").hasRole("STAFF")
+                .antMatchers("/upload").hasRole("STAFF")
                 .antMatchers("/download/{filename}").permitAll()
                 .antMatchers("/multiple/upload/db").hasRole("STAFF")
                 .antMatchers("/getAll").hasRole("STAFF")

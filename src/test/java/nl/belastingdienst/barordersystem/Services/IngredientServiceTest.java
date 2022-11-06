@@ -1,11 +1,7 @@
 package nl.belastingdienst.barordersystem.Services;
 
-import nl.belastingdienst.barordersystem.Dto.CreateDrinkDto;
-import nl.belastingdienst.barordersystem.Dto.IngredientDto;
 import nl.belastingdienst.barordersystem.Dto.IngredientDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
-import nl.belastingdienst.barordersystem.Models.Drink;
-import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Repositories.IngredientRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,8 +19,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.Silent.class)
 class IngredientServiceTest {

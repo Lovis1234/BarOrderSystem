@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nl.belastingdienst.barordersystem.Models.Barkeeper;
-import nl.belastingdienst.barordersystem.Models.Status;
+import nl.belastingdienst.barordersystem.Models.Enums.Status;
 
 @Getter
 @Setter
