@@ -10,12 +10,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
-@CrossOrigin
 @RestController
 @RequestMapping(value = "/users")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
 
     public UserController(UserService userService){
@@ -41,7 +40,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/register")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto dto) {;
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto dto) {
         String newUsername = userService.createUser(dto);
         userService.addAuthority(newUsername, "ROLE_CUSTOMER");
 
@@ -53,7 +52,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/staff/create")
-    public ResponseEntity<UserDto> createBarkeeper(@RequestBody UserDto dto) {;
+    public ResponseEntity<UserDto> createBarkeeper(@RequestBody UserDto dto) {
         String newUsername = userService.createUser(dto);
         userService.addAuthority(newUsername, "ROLE_STAFF");
         userService.addAuthority(newUsername, "ROLE_CUSTOMER");
