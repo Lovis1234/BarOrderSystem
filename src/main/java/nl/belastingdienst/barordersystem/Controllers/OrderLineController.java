@@ -1,8 +1,9 @@
 package nl.belastingdienst.barordersystem.Controllers;
+
 import nl.belastingdienst.barordersystem.Dto.OrderLineRecieveDto;
 import nl.belastingdienst.barordersystem.Dto.OrderLineSendDto;
-import nl.belastingdienst.barordersystem.Models.OrderLine;
 import nl.belastingdienst.barordersystem.Models.Enums.Status;
+import nl.belastingdienst.barordersystem.Models.OrderLine;
 import nl.belastingdienst.barordersystem.Services.OrderLineService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class OrderLineController {
         StringBuilder sb = new StringBuilder();
         if(br.hasErrors()){
             for(FieldError error : br.getFieldErrors()){
-                sb.append(error.getField() + ": ");
+                sb.append(error.getField()).append(": ");
                 sb.append(error.getDefaultMessage());
                 sb.append("\n");
             }
