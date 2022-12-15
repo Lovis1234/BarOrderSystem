@@ -39,7 +39,7 @@ public class UserController {
 
     }
 
-    @PostMapping(value = "/register")
+    @PostMapping(value = "")
     public ResponseEntity<UserDto> createUser(@RequestBody UserDto dto) {
         String newUsername = userService.createUser(dto);
         userService.addAuthority(newUsername, "ROLE_CUSTOMER");
@@ -51,7 +51,7 @@ public class UserController {
         return ResponseEntity.created(location).build();
     }
 
-    @PostMapping(value = "/staff/create")
+    @PostMapping(value = "/staff")
     public ResponseEntity<UserDto> createBarkeeper(@RequestBody UserDto dto) {
         String newUsername = userService.createUser(dto);
         userService.addAuthority(newUsername, "ROLE_STAFF");

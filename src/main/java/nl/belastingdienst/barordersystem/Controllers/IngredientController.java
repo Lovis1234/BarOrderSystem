@@ -32,7 +32,7 @@ public class IngredientController {
 
 
 
-    @PostMapping(value = "/create")
+    @PostMapping(value = "")
     public ResponseEntity<Object> createIngredient(@Valid @RequestBody IngredientDto ingredientDto, BindingResult br){
         StringBuilder sb = new StringBuilder();
         if(br.hasErrors()){
@@ -50,7 +50,7 @@ public class IngredientController {
         }
     }
 
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable("id") Long id) {
         ingredientService.deleteIngredient(id);
         return ResponseEntity.noContent().build();

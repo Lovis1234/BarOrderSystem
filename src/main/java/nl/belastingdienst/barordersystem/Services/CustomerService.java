@@ -59,7 +59,7 @@ public class CustomerService {
     }
 
     public void updateCustomer(Long id, CustomerDto dto) {
-            if (customerRepository.findById(id).isEmpty()) throw new RecordNotFoundException("Customer not found");
+        if (customerRepository.findById(id).isEmpty()) throw new RecordNotFoundException("Customer not found");
             Customer customer = customerRepository.findById(id).get();
             customer.setName(dto.getName());
             customer.setId(dto.getId());

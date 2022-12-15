@@ -31,7 +31,7 @@ public class BarkeeperController {
 
 
 
-    @PostMapping(value = "/create")
+    @PostMapping(value = "")
     public ResponseEntity<Object> createBarkeeper(@Valid @RequestBody BarkeeperDto barkeeperDto, BindingResult br){
         StringBuilder sb = new StringBuilder();
         if(br.hasErrors()){

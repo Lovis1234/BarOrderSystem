@@ -4,6 +4,7 @@ import nl.belastingdienst.barordersystem.Services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -41,31 +42,27 @@ public class SecurityFilter {
 
                 .antMatchers("/customer/**").hasRole("STAFF")
 
-                .antMatchers("/drink").hasRole("CUSTOMER")
-                .antMatchers("/drink/price/{id}").hasRole("CUSTOMER")
-                .antMatchers("/drink/{id}").hasRole("CUSTOMER")
-                .antMatchers("/drink/createCustom").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.GET,"/drink/**").hasRole("CUSTOMER")
                 .antMatchers("/drink/**").hasRole("STAFF")
 
-                .antMatchers("/ingredient").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.GET,"/ingredient").hasRole("CUSTOMER")
                 .antMatchers("/ingredient/**").hasRole("STAFF")
 
-                .antMatchers("/order/create").hasRole("CUSTOMER")
-                .antMatchers("/order/status/{id}").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.POST,"/order").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.GET,"/order/status/{id}").hasRole("CUSTOMER")
                 .antMatchers("/order/**").hasRole("STAFF")
 
-                .antMatchers("/drinkimage/{id}").hasRole("CUSTOMER")
+                .antMatchers("/db/drinkimage/{id}").hasRole("CUSTOMER")
                 .antMatchers("/getInvoices/{id}").hasRole("CUSTOMER")
-                .antMatchers("/upload").hasRole("STAFF")
-                .antMatchers("/download/{filename}").permitAll()
-                .antMatchers("/multiple/upload/db").hasRole("STAFF")
-                .antMatchers("/getAll").hasRole("STAFF")
+                .antMatchers(HttpMethod.POST,"/db").hasRole("STAFF")
+                .antMatchers(HttpMethod.GET ,"/download/{filename}").permitAll()
+                .antMatchers("/download/**").hasRole("STAFF")
 
-                .antMatchers("/users/register").permitAll()
+                .antMatchers(HttpMethod.POST,"/users").permitAll()
                 .antMatchers("/users/**").hasRole("STAFF")
 
 
-                .antMatchers("/**").denyAll()
+//                .antMatchers("/**").denyAll()
                 .and()
                 .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
