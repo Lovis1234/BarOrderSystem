@@ -30,7 +30,7 @@ public class OrderLineController {
 
 
 
-    @PostMapping(value = "/create")
+    @PostMapping(value = "")
     public ResponseEntity<Object> createOrder(@Valid @RequestBody OrderLineSendDto orderDto, BindingResult br){
         StringBuilder sb = new StringBuilder();
         if(br.hasErrors()){
@@ -48,20 +48,20 @@ public class OrderLineController {
         }
     }
 
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> deleteOrder(@PathVariable("id") Long id) {
         orderLineService.deleteOrder(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(value = "/claim/{id}")
+    @PutMapping(value = "/{id}/claim")
     public ResponseEntity<String> claimOrder(@PathVariable Long id, @RequestParam ("staffId") Long staffId){
 
         orderLineService.setStatusOrder(Status.PREPARING,staffId, id);
         return ResponseEntity.ok("You have claimed order number: " + id);
     }
 
-    @PutMapping(value = "/finish/{id}")
+    @PutMapping(value = "/{id}/finish")
     public ResponseEntity<String> finishOrder(@PathVariable Long id, @RequestParam ("staffId") Long staffId){
         orderLineService.setStatusOrder(Status.DONE,staffId, id);
         return ResponseEntity.ok("You have finished order number: " + id);
@@ -72,7 +72,7 @@ public class OrderLineController {
         List<OrderLineRecieveDto> orders = orderLineService.getAllOrders();
         return ResponseEntity.ok(orders);
     }
-    @GetMapping(value = "/status/{id}")
+    @GetMapping(value = "/{id}/status")
     public ResponseEntity<List<OrderLineRecieveDto>> getStatusOrders(@PathVariable Long id){
         List<OrderLineRecieveDto> orders = orderLineService.getAllOrdersByCustomer(id);
         return ResponseEntity.ok(orders);

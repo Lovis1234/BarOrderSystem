@@ -1,8 +1,10 @@
 package nl.belastingdienst.barordersystem.Services;
 
 import nl.belastingdienst.barordersystem.Dto.CreateDrinkDto;
+import nl.belastingdienst.barordersystem.Dto.CustomerDto;
 import nl.belastingdienst.barordersystem.Dto.DrinkDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
+import nl.belastingdienst.barordersystem.Models.Customer;
 import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
@@ -148,6 +150,16 @@ public class DrinkService {
         if (drinkOptional.isPresent()) {
             drinkRepository.delete(drinkOptional.get());
         } else throw new RecordNotFoundException("Drink not found");
+    }
+
+    public void updateDrink(Long id, DrinkDto dto) {
+        if (drinkRepository.findById(id).isEmpty()) throw new RecordNotFoundException("Drink not found");
+        Drink drink = drinkRepository.findById(id).get();
+        drink.setName(dto.getName());
+        drink.setId(dto.getId());
+        drink.setIngredients(dto.getIngredients());
+        drink.setPrice(dto.getPrice());
+        drinkRepository.save(drink);
     }
 }
 

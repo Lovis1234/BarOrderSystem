@@ -37,13 +37,13 @@ import java.util.zip.ZipOutputStream;
 @Service
 public class DatabaseService {
     private final DocFileRepository doc;
-    @Autowired
     private CustomerRepository customerRepository;
-    @Autowired
     private DrinkRepository drinkRepository;
 
-    public DatabaseService(DocFileRepository doc){
+    public DatabaseService(DocFileRepository doc, CustomerRepository customerRepository, DrinkRepository drinkRepository) {
         this.doc = doc;
+        this.customerRepository = customerRepository;
+        this.drinkRepository = drinkRepository;
     }
 
     public Collection<FileDocument> getALlFromDB() {
@@ -56,6 +56,10 @@ public class DatabaseService {
         int i = 0;
             for (FileDocument invoice : invoices) {
                 filenames[i] = invoice.getFileName();
+
+                System.out.println(invoice.getFileName());
+                System.out.println(filenames[i]);
+
                 i++;
         }
         return filenames;
@@ -103,7 +107,9 @@ public class DatabaseService {
     public ResponseEntity<byte[]> singleFileDownload(String fileName, HttpServletRequest request){
 
        FileDocument document = doc.findByFileName(fileName);
+
         String mimeType = request.getServletContext().getMimeType(document.getFileName());
+        System.out.println(mimeType);
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + document.getFileName()).body(document.getDocFile());
 
     }
@@ -127,7 +133,7 @@ public class DatabaseService {
 
     public Resource downLoadFileDatabase(String fileName) {
 
-        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/download/").path(fileName).toUriString();
+        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/db/").path(fileName).toUriString();
 
         Resource resource;
 
@@ -136,7 +142,9 @@ public class DatabaseService {
         } catch (MalformedURLException e) {
             throw new RuntimeException("Issue in reading the file", e);
         }
+        System.out.println(resource);
         if(resource.exists()&& resource.isReadable()) {
+
 
             return resource;
         } else {

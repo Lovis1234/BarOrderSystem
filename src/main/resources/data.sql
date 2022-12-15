@@ -10,7 +10,8 @@ INSERT INTO customer (id,name) VALUES (2001,'Piebe'),
 
 INSERT INTO authorities (id, username, authority) VALUES (3001, 'Pieter', 'ROLE_STAFF'),
                                                          (3002, 'Piebe', 'ROLE_CUSTOMER'),
-                                                         (3003, 'Pieter', 'ROLE_CUSTOMER');
+                                                         (3003, 'Pieter', 'ROLE_CUSTOMER'),
+                                                         (3004, 'Stan', 'ROLE_CUSTOMER');
 
 INSERT INTO ingredients (id, name, price)
 VALUES (7001, 'Wodka', 3.00),

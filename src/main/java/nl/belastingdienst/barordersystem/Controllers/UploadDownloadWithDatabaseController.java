@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Objects;
-
+@RequestMapping("/db")
 @RestController
 public class UploadDownloadWithDatabaseController {
 
@@ -25,7 +25,7 @@ public class UploadDownloadWithDatabaseController {
         this.databaseService = databaseService;
     }
 
-    @PostMapping("/upload")
+    @PostMapping("")
     public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam TypeDocument type, @RequestParam("destinationId") Long id) throws IOException {
         FileDocument fileDocument = databaseService.uploadFileDocument(file,type, id);
         String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFromDB/").path(Objects.requireNonNull(fileDocument.getFileName())).toUriString();
@@ -34,25 +34,28 @@ public class UploadDownloadWithDatabaseController {
     }
 
 
-    @GetMapping("/download/{fileName}")
+    @GetMapping("/{fileName}")
     ResponseEntity<byte[]> downLoadSingleFile(@PathVariable String fileName, HttpServletRequest request) {
 
         return databaseService.singleFileDownload(fileName, request);
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("")
     public Collection<FileDocument> getAllFiles(){
             return databaseService.getALlFromDB();
     }
 
-    @GetMapping("/drinkimage/{id}")
+    @GetMapping("/{id}/drinkimage")
     ResponseEntity<byte[]> getDrinkImageByDrinkId(@PathVariable Long id, HttpServletRequest request) {
         return databaseService.getDrinkImage(id, request);
     }
 
-    @GetMapping("/getInvoices/{id}")
+    @GetMapping("/{id}/customerinvoices")
     public void getAllInvoices(@PathVariable Long id, HttpServletResponse response) throws IOException {
         String[] list = databaseService.getALlFromCustomer(id);
+        for (String files : list){
+            System.out.println(files);
+        }
         databaseService.getZipDownload(list,response);
     }
 }

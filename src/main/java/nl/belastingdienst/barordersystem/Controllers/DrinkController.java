@@ -1,7 +1,9 @@
 package nl.belastingdienst.barordersystem.Controllers;
 
 import nl.belastingdienst.barordersystem.Dto.CreateDrinkDto;
+import nl.belastingdienst.barordersystem.Dto.CustomerDto;
 import nl.belastingdienst.barordersystem.Dto.DrinkDto;
+import nl.belastingdienst.barordersystem.Dto.UserDto;
 import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Services.DrinkService;
 import org.springframework.http.HttpStatus;
@@ -30,7 +32,7 @@ public class DrinkController {
         return ResponseEntity.ok(drinkDtos);
     }
 
-    @GetMapping(value = "/price/{id}")
+    @GetMapping(value = "/{id}/price")
     public ResponseEntity<Double> getDrinkPrice(@PathVariable Long id){
         Double price = drinkService.getDrinkPrice(id);
         return ResponseEntity.ok(price);
@@ -43,7 +45,7 @@ public class DrinkController {
     }
 
 
-    @PostMapping(value = "/createCustom")
+    @PostMapping(value = "/custom")
     public ResponseEntity<String> createCustomDrink(@Valid @RequestBody CreateDrinkDto drinkDto, BindingResult br){
         StringBuilder sb = new StringBuilder();
         if(br.hasErrors()){
@@ -59,12 +61,12 @@ public class DrinkController {
         }
     }
 
-    @DeleteMapping(value = "/deleteCustomDrinks")
+    @DeleteMapping(value = "/custom")
     public ResponseEntity<String> deleteCustomDrinks(){
         Long deleted = drinkService.deleteCustomDrinks();
         return ResponseEntity.ok("Deleted " + deleted + " custom drink(s).");
     }
-    @PutMapping(value = "/addIngredientToDrink")
+    @PutMapping(value = "/ingredient")
     public ResponseEntity<String> addIngredient(@RequestParam("drinkId") Long drinkId, @RequestParam("ingredientId") Long ingredientId)
         {
                 drinkService.addIngredient(drinkId, ingredientId);
@@ -72,7 +74,7 @@ public class DrinkController {
 
         }
 
-    @PutMapping(value = "/removeIngredientFromDrink")
+    @DeleteMapping(value = "/ingredient")
     public ResponseEntity<String> removeIngredient(@RequestParam("drinkId") Long drinkId, @RequestParam("ingredientId") Long ingredientId) {
         {
                 drinkService.removeIngredient(drinkId, ingredientId);
@@ -80,7 +82,7 @@ public class DrinkController {
 
         }
     }
-    @PostMapping(value = "/create")
+    @PostMapping(value = "")
     public ResponseEntity<Object> createDrink(@Valid @RequestBody CreateDrinkDto drinkDto, BindingResult br){
         StringBuilder sb = new StringBuilder();
         if(br.hasErrors()){
@@ -97,9 +99,16 @@ public class DrinkController {
             return ResponseEntity.created(location).build();
         }
     }
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> deleteDink(@PathVariable("id") Long id) {
         drinkService.deleteDrink(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UserDto> updateDrink(@PathVariable("id") Long id, @RequestBody DrinkDto dto) {
+
+        drinkService.updateDrink(id, dto);
         return ResponseEntity.noContent().build();
     }
 
