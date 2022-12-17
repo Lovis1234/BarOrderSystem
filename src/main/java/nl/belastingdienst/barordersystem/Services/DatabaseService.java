@@ -56,10 +56,6 @@ public class DatabaseService {
         int i = 0;
             for (FileDocument invoice : invoices) {
                 filenames[i] = invoice.getFileName();
-
-                System.out.println(invoice.getFileName());
-                System.out.println(filenames[i]);
-
                 i++;
         }
         return filenames;
@@ -109,7 +105,6 @@ public class DatabaseService {
        FileDocument document = doc.findByFileName(fileName);
 
         String mimeType = request.getServletContext().getMimeType(document.getFileName());
-        System.out.println(mimeType);
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + document.getFileName()).body(document.getDocFile());
 
     }
@@ -142,10 +137,7 @@ public class DatabaseService {
         } catch (MalformedURLException e) {
             throw new RuntimeException("Issue in reading the file", e);
         }
-        System.out.println(resource);
         if(resource.exists()&& resource.isReadable()) {
-
-
             return resource;
         } else {
             throw new RuntimeException("the file doesn't exist or not readable");

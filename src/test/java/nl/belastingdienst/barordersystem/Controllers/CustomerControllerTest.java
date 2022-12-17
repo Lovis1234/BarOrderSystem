@@ -48,12 +48,12 @@ class CustomerControllerTest {
 
         //assert good flow
         mockMvc
-                .perform(MockMvcRequestBuilders.post("/customer/create").contentType(MediaType.APPLICATION_JSON)
+                .perform(MockMvcRequestBuilders.post("/customer").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                         .andExpect(MockMvcResultMatchers.status().isCreated());
         //assert error
         mockMvc
-                .perform(MockMvcRequestBuilders.post("/customer/create").contentType(MediaType.APPLICATION_JSON)
+                .perform(MockMvcRequestBuilders.post("/customer").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJsonError))
                 .andExpect(status().isBadRequest());
 
