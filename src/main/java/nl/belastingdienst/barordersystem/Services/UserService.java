@@ -18,12 +18,17 @@ import java.util.Set;
 
 @Service
 public class UserService {
-    @Autowired
+
     private UserRepository userRepository;
-    @Autowired
-    private CustomerService customerService;
-    @Autowired
+
+
     private PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
     public List<UserDto> getUsers() {
         List<UserDto> collection = new ArrayList<>();
         List<User> list = userRepository.findAll();

@@ -22,13 +22,13 @@ import java.util.List;
 public class CustomerController {
 
     CustomerService customerService;
-    @Autowired
     DatabaseService databaseService;
-    @Autowired
     DrinkService drinkService;
 
-    public CustomerController(CustomerService customerService){
+    public CustomerController(CustomerService customerService, DatabaseService databaseService, DrinkService drinkService) {
         this.customerService = customerService;
+        this.databaseService = databaseService;
+        this.drinkService = drinkService;
     }
 
     @PostMapping(value = "")

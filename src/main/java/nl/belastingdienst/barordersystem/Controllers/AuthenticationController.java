@@ -21,14 +21,20 @@ import java.security.Principal;
 @RestController
 public class AuthenticationController {
 
-    @Autowired
+
     private AuthenticationManager authenticationManager;
 
-    @Autowired
+
     private CustomUserDetailsService userDetailsService;
 
-    @Autowired
+
     JwtUtil jwtUtl;
+
+    public AuthenticationController(AuthenticationManager authenticationManager, CustomUserDetailsService userDetailsService, JwtUtil jwtUtl) {
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.jwtUtl = jwtUtl;
+    }
 
     @GetMapping(value = "/authenticated")
     public ResponseEntity<Object> authenticated(Authentication authentication, Principal principal) {

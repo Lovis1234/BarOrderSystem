@@ -18,11 +18,10 @@ import java.util.Optional;
 
 @Service
 public class DrinkService {
-    @Autowired
     DrinkRepository drinkRepository;
-    @Autowired
+
     IngredientRepository ingredientRepository;
-    @Autowired
+
     IngredientService ingredientService;
 
     public DrinkService(DrinkRepository drinkRepository, IngredientRepository ingredientRepository, IngredientService ingredientService) {
