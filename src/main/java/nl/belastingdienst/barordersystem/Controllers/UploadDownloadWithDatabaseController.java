@@ -53,9 +53,6 @@ public class UploadDownloadWithDatabaseController {
     @GetMapping("/{id}/customerinvoices")
     public void getAllInvoices(@PathVariable Long id, HttpServletResponse response) throws IOException {
         String[] list = databaseService.getALlFromCustomer(id);
-        for (String files : list){
-            System.out.println(files);
-        }
         databaseService.getZipDownload(list,response);
     }
 }
