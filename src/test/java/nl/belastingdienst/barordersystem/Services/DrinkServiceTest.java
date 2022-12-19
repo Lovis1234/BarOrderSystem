@@ -28,6 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class DrinkServiceTest {
 
     Drink drink;
+
+    DrinkDto drinkDto;
     Ingredient ingredient;
     Ingredient ingredient2;
     @InjectMocks
@@ -45,6 +47,7 @@ class DrinkServiceTest {
     @BeforeEach
     public void setup(){
         drink = new Drink(1L,"Red Bull",0.0,null,null,true);
+        drinkDto = new DrinkDto(1L,"Red Bull",0.0,null);
         list = new ArrayList<>();
         listFilled = new ArrayList<>();
         listFilled.add(ingredient);
@@ -241,6 +244,21 @@ class DrinkServiceTest {
         drinkService.deleteDrink(drink.getId());
 
         Mockito.verify(drinkRepository, Mockito.times(1)).delete(drink);
+        assertThrows(RecordNotFoundException.class,
+                ()->{drinkService.deleteDrink(drink.getId()+1);},
+                "Drink not found");
+    }
+
+    @Test
+    void updateDrinkAndThrowsRightError(){
+        Mockito
+                .when(drinkRepository.findById(drink.getId()))
+                .thenReturn(Optional.of(drink));
+
+
+        drinkService.updateDrink(drink.getId(),drinkDto);
+
+        Mockito.verify(drinkRepository, Mockito.times(1)).save(drink);
         assertThrows(RecordNotFoundException.class,
                 ()->{drinkService.deleteDrink(drink.getId()+1);},
                 "Drink not found");
