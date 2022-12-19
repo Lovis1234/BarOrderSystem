@@ -2,6 +2,7 @@ package nl.belastingdienst.barordersystem.Controllers;
 
 
 import nl.belastingdienst.barordersystem.Dto.UserDto;
+import nl.belastingdienst.barordersystem.Dto.UserRequestDto;
 import nl.belastingdienst.barordersystem.Services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,17 +23,17 @@ public class UserController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<List<UserDto>> getUsers() {
+    public ResponseEntity<List<UserRequestDto>> getUsers() {
 
-        List<UserDto> userDtos = userService.getUsers();
+        List<UserRequestDto> userDtos = userService.getUsers();
 
         return ResponseEntity.ok().body(userDtos);
     }
 
     @GetMapping(value = "/{username}")
-    public ResponseEntity<UserDto> getUser(@PathVariable("username") String username) {
+    public ResponseEntity<UserRequestDto> getUser(@PathVariable("username") String username) {
 
-        UserDto optionalUser = userService.getUser(username);
+        UserRequestDto optionalUser = userService.getSingleUser(username);
 
 
         return ResponseEntity.ok().body(optionalUser);

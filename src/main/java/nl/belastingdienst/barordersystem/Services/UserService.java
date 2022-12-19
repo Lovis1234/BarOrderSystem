@@ -1,7 +1,9 @@
 package nl.belastingdienst.barordersystem.Services;
 
 
+import nl.belastingdienst.barordersystem.Dto.AuthorityRequestDto;
 import nl.belastingdienst.barordersystem.Dto.UserDto;
+import nl.belastingdienst.barordersystem.Dto.UserRequestDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Authority;
 import nl.belastingdienst.barordersystem.Models.User;
@@ -10,11 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -29,11 +29,11 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public List<UserDto> getUsers() {
-        List<UserDto> collection = new ArrayList<>();
+    public List<UserRequestDto> getUsers() {
+        List<UserRequestDto> collection = new ArrayList<>();
         List<User> list = userRepository.findAll();
         for (User user : list) {
-            collection.add(fromUser(user));
+            collection.add(toUserRecieveDto(user));
         }
         return collection;
     }
@@ -43,6 +43,17 @@ public class UserService {
         Optional<User> user = userRepository.findById(username);
         if (user.isPresent()){
             dto = fromUser(user.get());
+        }else {
+            throw new UsernameNotFoundException(username);
+        }
+        return dto;
+    }
+
+    public UserRequestDto getSingleUser(String username) {
+        UserRequestDto dto = new UserRequestDto();
+        Optional<User> user = userRepository.findById(username);
+        if (user.isPresent()){
+            dto = toUserRecieveDto(user.get());
         }else {
             throw new UsernameNotFoundException(username);
         }
@@ -112,8 +123,28 @@ public class UserService {
 
         user.setUsername(userDto.getUsername());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setAuthorities(userDto.getAuthorities());
 
         return user;
+    }
+
+    public UserRequestDto toUserRecieveDto(User userDto) {
+
+        var user = new UserRequestDto();
+
+        user.setUsername(userDto.getUsername());
+        user.setAuthorities(toAuthorityRequestDtoList(userDto.getAuthorities()));
+
+        return user;
+
+    }
+    private Set<AuthorityRequestDto> toAuthorityRequestDtoList(Set<Authority> authorities){
+        Set<AuthorityRequestDto> authorityRequestDtos = new HashSet<>();
+        for(Authority authority : authorities){
+            AuthorityRequestDto authorityRequestDto = new AuthorityRequestDto(authority.getAuthority());
+            authorityRequestDtos.add(authorityRequestDto);
+        }
+        return authorityRequestDtos;
     }
 
 }
