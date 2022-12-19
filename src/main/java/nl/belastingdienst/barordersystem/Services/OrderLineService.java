@@ -20,16 +20,19 @@ import java.util.Optional;
 @Service
 public class OrderLineService {
     OrderLineRepository orderRepository;
-    @Autowired
+
     DrinkRepository drinkRepository;
-    @Autowired
+
     CustomerRepository customerRepository;
-    @Autowired
+
     BarkeeperRepository barkeeperRepository;
 
 
-    public OrderLineService(OrderLineRepository orderRepository) {
+    public OrderLineService(OrderLineRepository orderRepository, DrinkRepository drinkRepository, CustomerRepository customerRepository, BarkeeperRepository barkeeperRepository) {
         this.orderRepository = orderRepository;
+        this.drinkRepository = drinkRepository;
+        this.customerRepository = customerRepository;
+        this.barkeeperRepository = barkeeperRepository;
     }
 
     public List<OrderLineRecieveDto> getAllOrders() {

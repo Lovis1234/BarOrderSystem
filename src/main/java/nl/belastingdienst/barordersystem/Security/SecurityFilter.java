@@ -17,11 +17,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityFilter {
 
-    @Autowired
-    CustomUserDetailsService customUserDetailsService;
 
-    @Autowired
     JwtRequestFilter jwtRequestFilter;
+
+    public SecurityFilter(JwtRequestFilter jwtRequestFilter) {
+        this.jwtRequestFilter = jwtRequestFilter;
+    }
 
     @Bean
     public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {

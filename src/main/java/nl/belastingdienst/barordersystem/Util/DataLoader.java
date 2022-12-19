@@ -15,20 +15,11 @@ import java.nio.file.Paths;
 @Component
 public class DataLoader {
     private final DatabaseService databaseService;
-    private final DrinkService drinkService;
-    @Autowired
-    private final DrinkRepository drinkRepository;
-    @Autowired
-    private final DocFileRepository docFileRepository;
 
-    public DataLoader(DatabaseService databaseService, DrinkService drinkService, DrinkRepository drinkRepository, DocFileRepository docFileRepository) throws IOException {
+    public DataLoader(DatabaseService databaseService) throws IOException {
         this.databaseService = databaseService;
-        this.drinkService = drinkService;
-        this.drinkRepository = drinkRepository;
-        this.docFileRepository = docFileRepository;
         loadDummyInvoice();
         loadDummyPicture();
-
     }
 
     private void loadDummyInvoice() throws IOException {
