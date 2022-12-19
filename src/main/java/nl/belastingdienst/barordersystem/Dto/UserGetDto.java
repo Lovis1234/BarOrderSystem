@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nl.belastingdienst.barordersystem.Models.Authority;
 
 import java.util.Set;
 
@@ -13,7 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserRequestDto {
+public class UserGetDto {
 
     public String username;
     @JsonSerialize

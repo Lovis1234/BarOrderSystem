@@ -3,16 +3,14 @@ package nl.belastingdienst.barordersystem.Services;
 
 import nl.belastingdienst.barordersystem.Dto.AuthorityRequestDto;
 import nl.belastingdienst.barordersystem.Dto.UserDto;
-import nl.belastingdienst.barordersystem.Dto.UserRequestDto;
+import nl.belastingdienst.barordersystem.Dto.UserGetDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Authority;
 import nl.belastingdienst.barordersystem.Models.User;
 import nl.belastingdienst.barordersystem.Repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.*;
 
@@ -29,11 +27,11 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public List<UserRequestDto> getUsers() {
-        List<UserRequestDto> collection = new ArrayList<>();
+    public List<UserGetDto> getUsers() {
+        List<UserGetDto> collection = new ArrayList<>();
         List<User> list = userRepository.findAll();
         for (User user : list) {
-            collection.add(toUserRecieveDto(user));
+            collection.add(toUserGetDto(user));
         }
         return collection;
     }
@@ -49,11 +47,11 @@ public class UserService {
         return dto;
     }
 
-    public UserRequestDto getSingleUser(String username) {
-        UserRequestDto dto = new UserRequestDto();
+    public UserGetDto getSingleUser(String username) {
+        UserGetDto dto = new UserGetDto();
         Optional<User> user = userRepository.findById(username);
         if (user.isPresent()){
-            dto = toUserRecieveDto(user.get());
+            dto = toUserGetDto(user.get());
         }else {
             throw new UsernameNotFoundException(username);
         }
@@ -128,9 +126,9 @@ public class UserService {
         return user;
     }
 
-    public UserRequestDto toUserRecieveDto(User userDto) {
+    public UserGetDto toUserGetDto(User userDto) {
 
-        var user = new UserRequestDto();
+        var user = new UserGetDto();
 
         user.setUsername(userDto.getUsername());
         user.setAuthorities(toAuthorityRequestDtoList(userDto.getAuthorities()));
