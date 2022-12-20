@@ -51,14 +51,14 @@ public class DrinkController {
         StringBuilder sb = new StringBuilder();
         if (br.hasErrors()) {
             for (FieldError error : br.getFieldErrors()) {
-                sb.append(error.getField() + ": ");
+                sb.append(error.getField()).append(": ");
                 sb.append(error.getDefaultMessage());
                 sb.append("\n");
             }
             return new ResponseEntity<>(sb.toString(), HttpStatus.BAD_REQUEST);
         } else {
             Drink newDrink = drinkService.createCustomDrink(drinkDto);
-            return ResponseEntity.ok(newDrink.getName() + " is nu te bestellen voor €" + newDrink.getPrice());
+            return ResponseEntity.ok(newDrink.getName() + " is now available for order at €" + newDrink.getPrice());
         }
     }
 
@@ -89,7 +89,7 @@ public class DrinkController {
         StringBuilder sb = new StringBuilder();
         if (br.hasErrors()) {
             for (FieldError error : br.getFieldErrors()) {
-                sb.append(error.getField() + ": ");
+                sb.append(error.getField()).append(": ");
                 sb.append(error.getDefaultMessage());
                 sb.append("\n");
             }

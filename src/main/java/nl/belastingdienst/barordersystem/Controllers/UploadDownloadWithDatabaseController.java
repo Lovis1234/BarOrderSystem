@@ -30,7 +30,7 @@ public class UploadDownloadWithDatabaseController {
     @PostMapping("")
     public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam TypeDocument type, @RequestParam("destinationId") Long id) throws IOException {
         FileDocument fileDocument = databaseService.uploadFileDocument(file, type, id);
-        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFromDB/").path(Objects.requireNonNull(fileDocument.getFileName())).toUriString();
+        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/db/").path(Objects.requireNonNull(fileDocument.getFileName())).toUriString();
         String contentType = file.getContentType();
         return new FileUploadResponse(fileDocument.getFileName(), contentType, url);
     }

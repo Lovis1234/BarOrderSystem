@@ -11,9 +11,5 @@ import org.springframework.security.core.GrantedAuthority;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthorityRequestDto implements GrantedAuthority {
-    private String authority;
-
-    public AuthorityRequestDto(String username, String authority) {
-        this.authority = authority;
-    }
+    public String authority;
 }

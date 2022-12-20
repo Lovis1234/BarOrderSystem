@@ -36,7 +36,7 @@ public class IngredientController {
         StringBuilder sb = new StringBuilder();
         if (br.hasErrors()) {
             for (FieldError error : br.getFieldErrors()) {
-                sb.append(error.getField() + ": ");
+                sb.append(error.getField()).append(": ");
                 sb.append(error.getDefaultMessage());
                 sb.append("\n");
             }
