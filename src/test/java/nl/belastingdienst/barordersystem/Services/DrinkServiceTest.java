@@ -38,7 +38,7 @@ class DrinkServiceTest {
     @InjectMocks
     DrinkService drinkService;
 
-    private ServletWebServerApplicationContext context1 = new ServletWebServerApplicationContext();
+    private final ServletWebServerApplicationContext context1 = new ServletWebServerApplicationContext();
 
     private List<Ingredient> list;
 

@@ -21,11 +21,12 @@ public class BarkeeperService {
     public List<BarkeeperDto> getAllBarkeepers() {
         List<Barkeeper> barkeepers = barkeeperRepository.findAll();
         List<BarkeeperDto> barkeeperDtos = new ArrayList<>();
-        for(Barkeeper barkeeper : barkeepers){
+        for (Barkeeper barkeeper : barkeepers) {
             barkeeperDtos.add(fromBarkeeper(barkeeper));
         }
         return barkeeperDtos;
     }
+
     public BarkeeperDto createBarkeeper(BarkeeperDto barkeeperDto) {
         Barkeeper barkeeper = toBarkeeper(barkeeperDto);
         Barkeeper newBarkeeper = barkeeperRepository.save(barkeeper);
@@ -35,14 +36,14 @@ public class BarkeeperService {
     }
 
 
-    private BarkeeperDto fromBarkeeper(Barkeeper barkeeper){
+    private BarkeeperDto fromBarkeeper(Barkeeper barkeeper) {
         BarkeeperDto barkeeperDto = new BarkeeperDto();
         barkeeperDto.setId(barkeeper.getId());
         barkeeperDto.setName(barkeeper.getName());
         return barkeeperDto;
     }
 
-    private Barkeeper toBarkeeper(BarkeeperDto barkeeperDto){
+    private Barkeeper toBarkeeper(BarkeeperDto barkeeperDto) {
         Barkeeper barkeeper = new Barkeeper();
         barkeeper.setId(barkeeperDto.getId());
         barkeeper.setName(barkeeperDto.getName());

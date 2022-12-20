@@ -5,10 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nl.belastingdienst.barordersystem.Models.Barkeeper;
-import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Models.Enums.Status;
 
 import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor

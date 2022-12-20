@@ -1,13 +1,14 @@
 package nl.belastingdienst.barordersystem.Services;
 
-import nl.belastingdienst.barordersystem.Dto.*;
+import nl.belastingdienst.barordersystem.Dto.CreateDrinkDto;
+import nl.belastingdienst.barordersystem.Dto.DrinkDto;
+import nl.belastingdienst.barordersystem.Dto.DrinkGetDto;
+import nl.belastingdienst.barordersystem.Dto.IngredientByDrinkDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
-import nl.belastingdienst.barordersystem.Models.Customer;
 import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
 import nl.belastingdienst.barordersystem.Repositories.IngredientRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,11 +32,12 @@ public class DrinkService {
     public List<DrinkGetDto> getAllDrinks() {
         List<Drink> drinks = drinkRepository.findAll();
         List<DrinkGetDto> drinkDtos = new ArrayList<>();
-        for(Drink drink : drinks){
+        for (Drink drink : drinks) {
             drinkDtos.add(fromDrinktoDrinkGetDto(drink));
         }
         return drinkDtos;
     }
+
     public DrinkGetDto getDrinkById(Long id) {
         Optional<Drink> DrinkOptional = drinkRepository.findById(id);
         if (DrinkOptional.isEmpty()) {
@@ -45,9 +47,10 @@ public class DrinkService {
             return fromDrinktoDrinkGetDto(drink);
         }
     }
+
     public double getDrinkPrice(Long id) {
         return drinkRepository.findPriceDrink(id);
-        }
+    }
 
     public Drink createDrink(CreateDrinkDto drinkDto) {
         Drink drink = toCustomDrink(drinkDto);
@@ -60,7 +63,7 @@ public class DrinkService {
 
     }
 
-    public Long deleteCustomDrinks(){
+    public Long deleteCustomDrinks() {
         Long deleted = drinkRepository.deleteByPermanent(false);
         return deleted;
     }
@@ -77,7 +80,7 @@ public class DrinkService {
 
     }
 
-    public DrinkGetDto fromDrinktoDrinkGetDto(Drink drink){
+    public DrinkGetDto fromDrinktoDrinkGetDto(Drink drink) {
         DrinkGetDto drinkDto = new DrinkGetDto();
         drinkDto.setId(drink.getId());
         drinkDto.setName(drink.getName());
@@ -86,13 +89,13 @@ public class DrinkService {
         return drinkDto;
     }
 
-    private Drink toCustomDrink(CreateDrinkDto drinkDto){
+    private Drink toCustomDrink(CreateDrinkDto drinkDto) {
         Drink drink = new Drink();
         drink.setId(drink.getId());
         drink.setName(drinkDto.getName());
         Long[] ingredientIds = drinkDto.getIngredients();
         List<Ingredient> list = new ArrayList<>();
-        for (Long ingredientId : ingredientIds){
+        for (Long ingredientId : ingredientIds) {
             Ingredient ingredient = ingredientService.getIngredientById(ingredientId);
             list.add(ingredient);
         }
@@ -100,7 +103,8 @@ public class DrinkService {
 
         return drink;
     }
-    private void updatePrice(Long id){
+
+    private void updatePrice(Long id) {
         Optional<Drink> drinkOptional = drinkRepository.findById(id);
         if (drinkOptional.isPresent()) {
             Drink drink = drinkOptional.get();
@@ -111,19 +115,19 @@ public class DrinkService {
 
     public void addIngredient(Long drinkId, Long ingredientId) {
         Optional<Drink> drinkOptional = drinkRepository.findById(drinkId);
-        if (drinkOptional.isPresent()){
+        if (drinkOptional.isPresent()) {
             Ingredient ingredient = ingredientService.getIngredientById(ingredientId);
-                Drink drink = drinkOptional.get();
-                drink.addIngredient(ingredient);
-                drinkRepository.save(drink);
-                updatePrice(drinkId);
+            Drink drink = drinkOptional.get();
+            drink.addIngredient(ingredient);
+            drinkRepository.save(drink);
+            updatePrice(drinkId);
         } else throw new RecordNotFoundException("Drink not found");
 
     }
 
     public void removeIngredient(Long drinkId, Long ingredientId) {
         Optional<Drink> drinkOptional = drinkRepository.findById(drinkId);
-        if (drinkOptional.isPresent()){
+        if (drinkOptional.isPresent()) {
             Ingredient ingredient = ingredientService.getIngredientById(ingredientId);
             Drink drink = drinkOptional.get();
             drink.removeIngredient(ingredient);
@@ -150,7 +154,7 @@ public class DrinkService {
         drinkRepository.save(drink);
     }
 
-    public List<DrinkGetDto> fromDrinkList(List<Drink> drinkList){
+    public List<DrinkGetDto> fromDrinkList(List<Drink> drinkList) {
         List<DrinkGetDto> drinkGetDtos = new ArrayList<>();
         for (Drink drink : drinkList) {
             DrinkGetDto drinkDto = new DrinkGetDto();
@@ -163,7 +167,7 @@ public class DrinkService {
         return drinkGetDtos;
     }
 
-    private List<IngredientByDrinkDto> fromIngredientList(List<Ingredient> ingredientList){
+    private List<IngredientByDrinkDto> fromIngredientList(List<Ingredient> ingredientList) {
         List<IngredientByDrinkDto> ingredientByDrinkDtoList = new ArrayList<>();
         for (Ingredient ingredient : ingredientList) {
             IngredientByDrinkDto ingredientByDrinkDto = new IngredientByDrinkDto();

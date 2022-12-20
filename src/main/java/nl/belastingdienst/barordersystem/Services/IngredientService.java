@@ -1,6 +1,5 @@
 package nl.belastingdienst.barordersystem.Services;
 
-import nl.belastingdienst.barordersystem.Dto.IngredientByDrinkDto;
 import nl.belastingdienst.barordersystem.Dto.IngredientDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Ingredient;
@@ -22,11 +21,12 @@ public class IngredientService {
     public List<IngredientDto> getAllIngredients() {
         List<Ingredient> ingredients = ingredientRepository.findAll();
         List<IngredientDto> ingredientDtos = new ArrayList<>();
-        for(Ingredient ingredient : ingredients){
+        for (Ingredient ingredient : ingredients) {
             ingredientDtos.add(fromIngredient(ingredient));
         }
         return ingredientDtos;
     }
+
     public Ingredient getIngredientById(Long id) {
         Optional<Ingredient> IngredientOptional = ingredientRepository.findById(id);
         if (!IngredientOptional.isPresent()) {
@@ -36,6 +36,7 @@ public class IngredientService {
             return ingredient;
         }
     }
+
     public IngredientDto createIngredient(IngredientDto ingredientDto) {
         Ingredient ingredient = toIngredient(ingredientDto);
         Ingredient newIngredient = ingredientRepository.save(ingredient);
@@ -45,7 +46,7 @@ public class IngredientService {
     }
 
 
-    private IngredientDto fromIngredient(Ingredient ingredient){
+    private IngredientDto fromIngredient(Ingredient ingredient) {
         IngredientDto ingredientDto = new IngredientDto();
         ingredientDto.setId(ingredient.getId());
         ingredientDto.setName(ingredient.getName());
@@ -53,7 +54,7 @@ public class IngredientService {
         return ingredientDto;
     }
 
-    private Ingredient toIngredient(IngredientDto ingredientDto){
+    private Ingredient toIngredient(IngredientDto ingredientDto) {
         Ingredient ingredient = new Ingredient();
         ingredient.setId(ingredientDto.getId());
         ingredient.setName(ingredientDto.getName());
@@ -69,12 +70,12 @@ public class IngredientService {
     }
 
     public void updateIngredient(Long id, IngredientDto dto) {
-        if (ingredientRepository.findById(id).isPresent()){
-        Ingredient ingredient = ingredientRepository.findById(id).get();
-        ingredient.setName(dto.getName());
-        ingredient.setPrice(dto.getPrice());
-        ingredient.setId(dto.getId());
-        ingredientRepository.save(ingredient);
+        if (ingredientRepository.findById(id).isPresent()) {
+            Ingredient ingredient = ingredientRepository.findById(id).get();
+            ingredient.setName(dto.getName());
+            ingredient.setPrice(dto.getPrice());
+            ingredient.setId(dto.getId());
+            ingredientRepository.save(ingredient);
         } else throw new RecordNotFoundException("Ingredient not found");
     }
 }

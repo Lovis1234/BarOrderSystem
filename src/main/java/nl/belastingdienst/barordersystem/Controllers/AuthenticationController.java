@@ -4,7 +4,6 @@ import nl.belastingdienst.barordersystem.Dto.AuthenticationRequest;
 import nl.belastingdienst.barordersystem.Dto.AuthenticationResponse;
 import nl.belastingdienst.barordersystem.Security.JwtUtil;
 import nl.belastingdienst.barordersystem.Services.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,10 +21,10 @@ import java.security.Principal;
 public class AuthenticationController {
 
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
 
-    private CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
 
     JwtUtil jwtUtl;
@@ -51,8 +50,7 @@ public class AuthenticationController {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
             );
-        }
-        catch (BadCredentialsException ex) {
+        } catch (BadCredentialsException ex) {
             throw new Exception("Incorrect username or password", ex);
         }
 

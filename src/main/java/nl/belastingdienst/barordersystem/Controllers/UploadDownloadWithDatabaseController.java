@@ -14,9 +14,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+
 @RequestMapping("/db")
 @RestController
 public class UploadDownloadWithDatabaseController {
@@ -29,10 +29,10 @@ public class UploadDownloadWithDatabaseController {
 
     @PostMapping("")
     public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam TypeDocument type, @RequestParam("destinationId") Long id) throws IOException {
-        FileDocument fileDocument = databaseService.uploadFileDocument(file,type, id);
+        FileDocument fileDocument = databaseService.uploadFileDocument(file, type, id);
         String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFromDB/").path(Objects.requireNonNull(fileDocument.getFileName())).toUriString();
         String contentType = file.getContentType();
-        return new FileUploadResponse(fileDocument.getFileName(), contentType, url );
+        return new FileUploadResponse(fileDocument.getFileName(), contentType, url);
     }
 
 
@@ -43,8 +43,8 @@ public class UploadDownloadWithDatabaseController {
     }
 
     @GetMapping("")
-    public List<FileDocumentGetDto> getAllFiles(){
-            return databaseService.getALlFromDB();
+    public List<FileDocumentGetDto> getAllFiles() {
+        return databaseService.getALlFromDB();
     }
 
     @GetMapping("/{id}/drinkimage")
@@ -55,6 +55,6 @@ public class UploadDownloadWithDatabaseController {
     @GetMapping("/{id}/customerinvoices")
     public void getAllInvoices(@PathVariable Long id, HttpServletResponse response) throws IOException {
         String[] list = databaseService.getALlFromCustomer(id);
-        databaseService.getZipDownload(list,response);
+        databaseService.getZipDownload(list, response);
     }
 }

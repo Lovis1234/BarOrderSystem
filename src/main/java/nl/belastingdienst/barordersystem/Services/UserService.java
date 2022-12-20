@@ -17,14 +17,25 @@ import java.util.*;
 @Service
 public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    public static UserDto fromUser(User user) {
+
+        var dto = new UserDto();
+
+        dto.username = user.getUsername();
+        dto.password = user.getPassword();
+        dto.authorities = user.getAuthorities();
+
+        return dto;
     }
 
     public List<UserGetDto> getUsers() {
@@ -39,9 +50,9 @@ public class UserService {
     public UserDto getUser(String username) {
         UserDto dto = new UserDto();
         Optional<User> user = userRepository.findById(username);
-        if (user.isPresent()){
+        if (user.isPresent()) {
             dto = fromUser(user.get());
-        }else {
+        } else {
             throw new UsernameNotFoundException(username);
         }
         return dto;
@@ -50,9 +61,9 @@ public class UserService {
     public UserGetDto getSingleUser(String username) {
         UserGetDto dto = new UserGetDto();
         Optional<User> user = userRepository.findById(username);
-        if (user.isPresent()){
+        if (user.isPresent()) {
             dto = toUserGetDto(user.get());
-        }else {
+        } else {
             throw new UsernameNotFoundException(username);
         }
         return dto;
@@ -104,17 +115,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public static UserDto fromUser(User user){
-
-        var dto = new UserDto();
-
-        dto.username = user.getUsername();
-        dto.password = user.getPassword();
-        dto.authorities = user.getAuthorities();
-
-        return dto;
-    }
-
     public User toUser(UserDto userDto) {
 
         var user = new User();
@@ -136,9 +136,10 @@ public class UserService {
         return user;
 
     }
-    private Set<AuthorityRequestDto> toAuthorityRequestDtoList(Set<Authority> authorities){
+
+    private Set<AuthorityRequestDto> toAuthorityRequestDtoList(Set<Authority> authorities) {
         Set<AuthorityRequestDto> authorityRequestDtos = new HashSet<>();
-        for(Authority authority : authorities){
+        for (Authority authority : authorities) {
             AuthorityRequestDto authorityRequestDto = new AuthorityRequestDto(authority.getAuthority());
             authorityRequestDtos.add(authorityRequestDto);
         }

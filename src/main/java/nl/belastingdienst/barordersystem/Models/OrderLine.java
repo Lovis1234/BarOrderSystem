@@ -8,6 +8,7 @@ import nl.belastingdienst.barordersystem.Models.Enums.Status;
 
 import javax.persistence.*;
 import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor

@@ -19,23 +19,22 @@ import java.util.List;
 public class BarkeeperController {
     BarkeeperService barkeeperService;
 
-    public BarkeeperController(BarkeeperService barkeeperService){
+    public BarkeeperController(BarkeeperService barkeeperService) {
         this.barkeeperService = barkeeperService;
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<List<BarkeeperDto>> getAllBarkeepers(){
+    public ResponseEntity<List<BarkeeperDto>> getAllBarkeepers() {
         List<BarkeeperDto> barkeeperDtos = barkeeperService.getAllBarkeepers();
         return ResponseEntity.ok(barkeeperDtos);
     }
 
 
-
     @PostMapping(value = "")
-    public ResponseEntity<Object> createBarkeeper(@Valid @RequestBody BarkeeperDto barkeeperDto, BindingResult br){
+    public ResponseEntity<Object> createBarkeeper(@Valid @RequestBody BarkeeperDto barkeeperDto, BindingResult br) {
         StringBuilder sb = new StringBuilder();
-        if(br.hasErrors()){
-            for(FieldError error : br.getFieldErrors()){
+        if (br.hasErrors()) {
+            for (FieldError error : br.getFieldErrors()) {
                 sb.append(error.getField() + ": ");
                 sb.append(error.getDefaultMessage());
                 sb.append("\n");
@@ -54,6 +53,7 @@ public class BarkeeperController {
         barkeeperService.deleteBarkeeper(id);
         return ResponseEntity.noContent().build();
     }
+
     @PutMapping(value = "/{id}")
     public ResponseEntity<UserDto> updateBarkeeper(@PathVariable("id") Long id, @RequestBody BarkeeperDto dto) {
 

@@ -1,9 +1,7 @@
 package nl.belastingdienst.barordersystem.Security;
 
 
-
 import nl.belastingdienst.barordersystem.Services.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,8 +18,8 @@ import java.io.IOException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private CustomUserDetailsService userDetailsService;
-    private JwtUtil jwtUtil;
+    private final CustomUserDetailsService userDetailsService;
+    private final JwtUtil jwtUtil;
 
     public JwtRequestFilter(CustomUserDetailsService userDetailsService, JwtUtil jwtUtil) {
         this.userDetailsService = userDetailsService;

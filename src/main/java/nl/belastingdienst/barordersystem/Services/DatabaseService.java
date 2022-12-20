@@ -1,13 +1,11 @@
 package nl.belastingdienst.barordersystem.Services;
 
 import nl.belastingdienst.barordersystem.Dto.FileDocumentGetDto;
-import nl.belastingdienst.barordersystem.Dto.IngredientDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Customer;
 import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Models.Enums.TypeDocument;
 import nl.belastingdienst.barordersystem.Models.FileDocument;
-import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Repositories.CustomerRepository;
 import nl.belastingdienst.barordersystem.Repositories.DocFileRepository;
 import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
@@ -29,15 +27,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Service
 public class DatabaseService {
     private final DocFileRepository doc;
-    private CustomerRepository customerRepository;
-    private DrinkRepository drinkRepository;
+    private final CustomerRepository customerRepository;
+    private final DrinkRepository drinkRepository;
 
     public DatabaseService(DocFileRepository doc, CustomerRepository customerRepository, DrinkRepository drinkRepository) {
         this.doc = doc;
@@ -47,16 +48,16 @@ public class DatabaseService {
 
     public List<FileDocumentGetDto> getALlFromDB() {
         List<FileDocument> fileDocuments = doc.findAll();
-        return  fromFileDocument(fileDocuments);
+        return fromFileDocument(fileDocuments);
     }
 
     public String[] getALlFromCustomer(Long id) {
         List<FileDocument> invoices = doc.findAllByCustomer(id);
         String[] filenames = new String[invoices.size()];
         int i = 0;
-            for (FileDocument invoice : invoices) {
-                filenames[i] = invoice.getFileName();
-                i++;
+        for (FileDocument invoice : invoices) {
+            filenames[i] = invoice.getFileName();
+            i++;
         }
         return filenames;
     }
@@ -70,14 +71,14 @@ public class DatabaseService {
         fileDocument.setDocFile(file.getBytes());
         doc.save(fileDocument);
 
-        if (type == TypeDocument.INVOICE){
-            insertInvoice(destinationId,fileDocument);
+        if (type == TypeDocument.INVOICE) {
+            insertInvoice(destinationId, fileDocument);
         } else if (type == TypeDocument.DRINKPICTURE) {
-            if (drinkRepository.findById(destinationId).isPresent()){
+            if (drinkRepository.findById(destinationId).isPresent()) {
                 Drink drink = drinkRepository.findById(destinationId).get();
                 drink.setPicture(fileDocument);
                 drinkRepository.save(drink);
-        } else throw new RecordNotFoundException("Drink not found!");
+            } else throw new RecordNotFoundException("Drink not found!");
 
         }
 
@@ -85,6 +86,7 @@ public class DatabaseService {
         return fileDocument;
 
     }
+
     private void insertInvoice(Long customerId, FileDocument file) {
         Customer customer = customerRepository.findById(customerId).get();
         if (customer.getInvoices() == null) {
@@ -100,9 +102,9 @@ public class DatabaseService {
         }
     }
 
-    public ResponseEntity<byte[]> singleFileDownload(String fileName, HttpServletRequest request){
+    public ResponseEntity<byte[]> singleFileDownload(String fileName, HttpServletRequest request) {
 
-       FileDocument document = doc.findByFileName(fileName);
+        FileDocument document = doc.findByFileName(fileName);
 
         String mimeType = request.getServletContext().getMimeType(document.getFileName());
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + document.getFileName()).body(document.getDocFile());
@@ -135,9 +137,9 @@ public class DatabaseService {
         try {
             resource = new UrlResource(url);
         } catch (MalformedURLException e) {
-            throw new ApplicationContextException("File not readable",e);
+            throw new ApplicationContextException("File not readable", e);
         }
-        if(resource.exists()&& resource.isReadable()) {
+        if (resource.exists() && resource.isReadable()) {
             return resource;
         } else {
             throw new ApplicationContextException("the file doesn't exist or not readable");
@@ -146,35 +148,36 @@ public class DatabaseService {
 
     public void createZipEntry(String file, ZipOutputStream zos) throws IOException {
 
-            Resource resource = downLoadFileDatabase(file);
-                ZipEntry zipEntry = new ZipEntry(Objects.requireNonNull(resource.getFilename()));
-                try {
-                    zipEntry.setSize(resource.contentLength());
-                    zos.putNextEntry(zipEntry);
+        Resource resource = downLoadFileDatabase(file);
+        ZipEntry zipEntry = new ZipEntry(Objects.requireNonNull(resource.getFilename()));
+        try {
+            zipEntry.setSize(resource.contentLength());
+            zos.putNextEntry(zipEntry);
 
-                    StreamUtils.copy(resource.getInputStream(), zos);
+            StreamUtils.copy(resource.getInputStream(), zos);
 
-                    zos.closeEntry();
-                } catch (IOException e) {
-                    throw new ApplicationContextException("some exception while zipping",e);
-                }
+            zos.closeEntry();
+        } catch (IOException e) {
+            throw new ApplicationContextException("some exception while zipping", e);
+        }
 
     }
+
     public void preload(File file)
-            throws IOException
-    {
+            throws IOException {
         Long count = doc.count();
         String name = StringUtils.cleanPath(Objects.requireNonNull(count + file.getName()));
         FileDocument fileDocument = new FileDocument();
         fileDocument.setFileName(name);
         FileInputStream fl = new FileInputStream(file);
-        byte[] arr = new byte[(int)file.length()];
+        byte[] arr = new byte[(int) file.length()];
         fl.read(arr);
         fl.close();
         fileDocument.setDocFile(arr);
         doc.save(fileDocument);
     }
-    public ResponseEntity<byte[]> getDrinkImage(Long drinkId, HttpServletRequest request){
+
+    public ResponseEntity<byte[]> getDrinkImage(Long drinkId, HttpServletRequest request) {
         FileDocument document = drinkRepository.findById(drinkId).get().getPicture();
         String mimeType = request.getServletContext().getMimeType(document.getFileName());
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + document.getFileName()).body(document.getDocFile());
@@ -183,11 +186,11 @@ public class DatabaseService {
     private List<FileDocumentGetDto> fromFileDocument(List<FileDocument> fileDocuments) {
         List<FileDocumentGetDto> fileDocumentGetDtos = new ArrayList<>();
         for (FileDocument fileDocument : fileDocuments) {
-        FileDocumentGetDto fileDocumentGetDto = new FileDocumentGetDto();
-        fileDocumentGetDto.setId(fileDocument.getId());
-        fileDocumentGetDto.setFileName(fileDocument.getFileName());
-        fileDocumentGetDtos.add(fileDocumentGetDto);
-    }
+            FileDocumentGetDto fileDocumentGetDto = new FileDocumentGetDto();
+            fileDocumentGetDto.setId(fileDocument.getId());
+            fileDocumentGetDto.setFileName(fileDocument.getFileName());
+            fileDocumentGetDtos.add(fileDocumentGetDto);
+        }
         return fileDocumentGetDtos;
     }
 

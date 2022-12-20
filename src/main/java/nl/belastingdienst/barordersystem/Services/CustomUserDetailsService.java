@@ -2,7 +2,6 @@ package nl.belastingdienst.barordersystem.Services;
 
 import nl.belastingdienst.barordersystem.Dto.UserDto;
 import nl.belastingdienst.barordersystem.Models.Authority;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +15,7 @@ import java.util.Set;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    private UserService userService;
+    private final UserService userService;
 
     public CustomUserDetailsService(UserService userService) {
         this.userService = userService;
@@ -31,7 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         Set<Authority> authorities = userDto.getAuthorities();
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        for (Authority authority: authorities) {
+        for (Authority authority : authorities) {
             grantedAuthorities.add(new SimpleGrantedAuthority(authority.getAuthority()));
         }
 

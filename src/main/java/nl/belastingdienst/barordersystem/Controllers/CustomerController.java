@@ -6,7 +6,6 @@ import nl.belastingdienst.barordersystem.Dto.UserDto;
 import nl.belastingdienst.barordersystem.Services.CustomerService;
 import nl.belastingdienst.barordersystem.Services.DatabaseService;
 import nl.belastingdienst.barordersystem.Services.DrinkService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -33,10 +32,10 @@ public class CustomerController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<Object> createCustomer(@Valid @RequestBody CustomerDto customerDto, BindingResult br){
+    public ResponseEntity<Object> createCustomer(@Valid @RequestBody CustomerDto customerDto, BindingResult br) {
         StringBuilder sb = new StringBuilder();
-        if(br.hasErrors()){
-            for(FieldError error : br.getFieldErrors()){
+        if (br.hasErrors()) {
+            for (FieldError error : br.getFieldErrors()) {
                 sb.append(error.getField() + ": ");
                 sb.append(error.getDefaultMessage());
                 sb.append("\n");
@@ -51,15 +50,17 @@ public class CustomerController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<List<CustomerGetDto>> getAllCustomers(){
+    public ResponseEntity<List<CustomerGetDto>> getAllCustomers() {
         List<CustomerGetDto> customerDtos = customerService.getAllCustomers();
         return ResponseEntity.ok(customerDtos);
     }
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> deleteCustomer(@PathVariable("id") Long id) {
         customerService.deleteCustomer(id);
         return ResponseEntity.noContent().build();
     }
+
     @PutMapping(value = "/{id}")
     public ResponseEntity<UserDto> updateCustomer(@PathVariable("id") Long id, @RequestBody CustomerDto dto) {
 
@@ -67,7 +68,6 @@ public class CustomerController {
 
         return ResponseEntity.noContent().build();
     }
-
 
 
 }

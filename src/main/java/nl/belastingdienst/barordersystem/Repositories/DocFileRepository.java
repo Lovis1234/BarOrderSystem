@@ -10,6 +10,7 @@ import java.util.List;
 @Transactional
 public interface DocFileRepository extends JpaRepository<FileDocument, Long> {
     FileDocument findByFileName(String fileName);
+
     @Query(value = "SELECT id, doc_file, file_name FROM file_document AS f inner join customer_invoices ci on f.id = ci.invoices_id WHERE ci.customer_id = ?1", nativeQuery = true)
     List<FileDocument> findAllByCustomer(Long id);
 }

@@ -4,13 +4,12 @@ import nl.belastingdienst.barordersystem.Dto.OrderLineRecieveDto;
 import nl.belastingdienst.barordersystem.Dto.OrderLineSendDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Drink;
-import nl.belastingdienst.barordersystem.Models.OrderLine;
 import nl.belastingdienst.barordersystem.Models.Enums.Status;
+import nl.belastingdienst.barordersystem.Models.OrderLine;
 import nl.belastingdienst.barordersystem.Repositories.BarkeeperRepository;
 import nl.belastingdienst.barordersystem.Repositories.CustomerRepository;
 import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
 import nl.belastingdienst.barordersystem.Repositories.OrderLineRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ public class OrderLineService {
     public List<OrderLineRecieveDto> getAllOrders() {
         List<OrderLine> orders = orderRepository.findAll();
         List<OrderLineRecieveDto> orderLineRecieveDtos = new ArrayList<>();
-        for(OrderLine order : orders){
+        for (OrderLine order : orders) {
             orderLineRecieveDtos.add(fromOrderToOrderRecieveDto(order));
         }
         return orderLineRecieveDtos;
@@ -50,7 +49,7 @@ public class OrderLineService {
     public List<OrderLineRecieveDto> getAllOrdersByCustomer(Long id) {
         List<OrderLine> orders = orderRepository.findAllByCustomer_Id(id);
         List<OrderLineRecieveDto> orderLineRecieveDtos = new ArrayList<>();
-        for(OrderLine order : orders){
+        for (OrderLine order : orders) {
             orderLineRecieveDtos.add(fromOrderToOrderRecieveDto(order));
         }
         return orderLineRecieveDtos;
@@ -59,13 +58,13 @@ public class OrderLineService {
     public List<OrderLineRecieveDto> getAllOpenOrders() {
         List<OrderLine> orders = orderRepository.findAllByStatusNotLike(Status.DONE);
         List<OrderLineRecieveDto> orderLineRecieveDtos = new ArrayList<>();
-        for(OrderLine order : orders){
+        for (OrderLine order : orders) {
             orderLineRecieveDtos.add(fromOrderToOrderRecieveDto(order));
         }
         return orderLineRecieveDtos;
     }
 
-        public OrderLine getOrderById(Long id) {
+    public OrderLine getOrderById(Long id) {
         Optional<OrderLine> OrderOptional = orderRepository.findById(id);
         if (OrderOptional.isEmpty()) {
             throw new RecordNotFoundException("OrderLine not found");
@@ -73,27 +72,29 @@ public class OrderLineService {
             return OrderOptional.get();
         }
     }
+
     public OrderLine createOrder(OrderLineSendDto orderLineSendDto) {
         OrderLine order = toOrder(orderLineSendDto);
         orderRepository.save(order);
         return order;
 
     }
-    private void claimOrder(Long staffId, Long orderLineId){
-            if (barkeeperRepository.findById(staffId).isPresent()) {
-                OrderLine orderLine = getOrderById(orderLineId);
+
+    private void claimOrder(Long staffId, Long orderLineId) {
+        if (barkeeperRepository.findById(staffId).isPresent()) {
+            OrderLine orderLine = getOrderById(orderLineId);
             orderLine.setBarkeeper(barkeeperRepository.findById(staffId).get());
             orderRepository.save(orderLine);
-            } else throw new RecordNotFoundException("Barkeeper not found");
+        } else throw new RecordNotFoundException("Barkeeper not found");
     }
 
     public void setStatusOrder(Status status, Long staffId, Long orderId) {
-            OrderLine orderLine = getOrderById(orderId);
-            orderLine.setStatus(status);
-            orderRepository.save(orderLine);
-            if (status == Status.PREPARING){
-                claimOrder(staffId,orderId);
-            }
+        OrderLine orderLine = getOrderById(orderId);
+        orderLine.setStatus(status);
+        orderRepository.save(orderLine);
+        if (status == Status.PREPARING) {
+            claimOrder(staffId, orderId);
+        }
     }
 
 
@@ -117,23 +118,24 @@ public class OrderLineService {
         if (customerRepository.findById(orderLineSendDto.getCustomer()).isPresent()) {
             order.setCustomer(customerRepository.findById(orderLineSendDto.getCustomer()).get());
         } else throw new RecordNotFoundException("Customer not found");
-            Long[] drinkIds = orderLineSendDto.getDrinkList();
-            List<Drink> list = new ArrayList<>();
-            for (Long drinkId : drinkIds) {
-                if (drinkRepository.findById(drinkId).isPresent()) {
-                    list.add(drinkRepository.findById(drinkId).get());
-                } else throw new RecordNotFoundException("Drink not found");
-            }
-            order.setDrinkList(list);
+        Long[] drinkIds = orderLineSendDto.getDrinkList();
+        List<Drink> list = new ArrayList<>();
+        for (Long drinkId : drinkIds) {
+            if (drinkRepository.findById(drinkId).isPresent()) {
+                list.add(drinkRepository.findById(drinkId).get());
+            } else throw new RecordNotFoundException("Drink not found");
+        }
+        order.setDrinkList(list);
         double price = 0;
         for (Drink drink : order.getDrinkList()) {
             price += drink.getPrice();
         }
         order.setPrice(price);
-            order.setStatus(Status.RECIEVED);
-            return order;
+        order.setStatus(Status.RECIEVED);
+        return order;
 
     }
+
     public void deleteOrder(Long id) {
         Optional<OrderLine> orderLineOptional = orderRepository.findById(id);
         if (orderLineOptional.isPresent()) {
