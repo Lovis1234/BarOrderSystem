@@ -2,6 +2,7 @@ package nl.belastingdienst.barordersystem.Services;
 
 import lombok.AllArgsConstructor;
 import nl.belastingdienst.barordersystem.Dto.CustomerDto;
+import nl.belastingdienst.barordersystem.Dto.CustomerGetDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Customer;
 import nl.belastingdienst.barordersystem.Repositories.CustomerRepository;
@@ -17,11 +18,11 @@ public class CustomerService {
     DatabaseService databaseService;
 
 
-    public List<CustomerDto> getAllCustomers() {
+    public List<CustomerGetDto> getAllCustomers() {
         List<Customer> customers = customerRepository.findAll();
-        List<CustomerDto> customerDtos = new ArrayList<>();
+        List<CustomerGetDto> customerDtos = new ArrayList<>();
         for(Customer customer : customers){
-            customerDtos.add(fromCustomer(customer));
+            customerDtos.add(toCustomerGetDto(customer));
         }
         return customerDtos;
     }
@@ -40,6 +41,13 @@ public class CustomerService {
         customerDto.setId(customer.getId());
         customerDto.setName(customer.getName());
         customerDto.setInvoices(customer.getInvoices());
+        return customerDto;
+    }
+
+    private CustomerGetDto toCustomerGetDto(Customer customer){
+        CustomerGetDto customerDto = new CustomerGetDto();
+        customerDto.setId(customer.getId());
+        customerDto.setName(customer.getName());
         return customerDto;
     }
 

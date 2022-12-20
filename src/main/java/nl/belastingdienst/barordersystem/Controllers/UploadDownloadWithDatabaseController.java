@@ -1,6 +1,7 @@
 package nl.belastingdienst.barordersystem.Controllers;
 
 
+import nl.belastingdienst.barordersystem.Dto.FileDocumentGetDto;
 import nl.belastingdienst.barordersystem.FileUploadResponse.FileUploadResponse;
 import nl.belastingdienst.barordersystem.Models.Enums.TypeDocument;
 import nl.belastingdienst.barordersystem.Models.FileDocument;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 @RequestMapping("/db")
 @RestController
@@ -41,7 +43,7 @@ public class UploadDownloadWithDatabaseController {
     }
 
     @GetMapping("")
-    public Collection<FileDocument> getAllFiles(){
+    public List<FileDocumentGetDto> getAllFiles(){
             return databaseService.getALlFromDB();
     }
 

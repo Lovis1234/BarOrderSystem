@@ -1,6 +1,7 @@
 package nl.belastingdienst.barordersystem.Controllers;
 
 import nl.belastingdienst.barordersystem.Dto.CustomerDto;
+import nl.belastingdienst.barordersystem.Dto.CustomerGetDto;
 import nl.belastingdienst.barordersystem.Dto.UserDto;
 import nl.belastingdienst.barordersystem.Services.CustomerService;
 import nl.belastingdienst.barordersystem.Services.DatabaseService;
@@ -50,8 +51,8 @@ public class CustomerController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<List<CustomerDto>> getAllCustomers(){
-        List<CustomerDto> customerDtos = customerService.getAllCustomers();
+    public ResponseEntity<List<CustomerGetDto>> getAllCustomers(){
+        List<CustomerGetDto> customerDtos = customerService.getAllCustomers();
         return ResponseEntity.ok(customerDtos);
     }
     @DeleteMapping(value = "/{id}")

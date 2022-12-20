@@ -2,6 +2,8 @@ package nl.belastingdienst.barordersystem.Services;
 
 import nl.belastingdienst.barordersystem.Dto.CreateDrinkDto;
 import nl.belastingdienst.barordersystem.Dto.DrinkDto;
+import nl.belastingdienst.barordersystem.Dto.DrinkGetDto;
+import nl.belastingdienst.barordersystem.Dto.IngredientByDrinkDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Models.Ingredient;
@@ -30,6 +32,7 @@ class DrinkServiceTest {
     Drink drink;
 
     DrinkDto drinkDto;
+    DrinkGetDto drinkGetDto;
     Ingredient ingredient;
     Ingredient ingredient2;
     @InjectMocks
@@ -38,7 +41,12 @@ class DrinkServiceTest {
     private ServletWebServerApplicationContext context1 = new ServletWebServerApplicationContext();
 
     private List<Ingredient> list;
+
+    private List<Drink> drinkList;
+
+    private List<IngredientByDrinkDto> listGet;
     private List<Ingredient> listFilled;
+    private List<DrinkGetDto> drinkGetDtos;
     @Mock
     DrinkRepository drinkRepository;
     @Mock
@@ -46,11 +54,17 @@ class DrinkServiceTest {
 
     @BeforeEach
     public void setup(){
-        drink = new Drink(1L,"Red Bull",0.0,null,null,true);
         drinkDto = new DrinkDto(1L,"Red Bull",0.0,null);
+        listGet = new ArrayList<>();
+        drinkGetDto = new DrinkGetDto(1L,"Red Bull",0.0,listGet);
         list = new ArrayList<>();
+        drink = new Drink(1L,"Red Bull",0.0,null,list,true);
         listFilled = new ArrayList<>();
+        drinkList = new ArrayList<>();
+        drinkList.add(drink);
         listFilled.add(ingredient);
+        drinkGetDtos = new ArrayList<>();
+        drinkGetDtos.add(drinkGetDto);
 
         ingredient = new Ingredient(2L,"Red Bull",3.5);
         ingredient2 = new Ingredient(3L,"Vodka",4);
@@ -60,8 +74,8 @@ class DrinkServiceTest {
     @Test
     void getAllDrinks() {
         //arange
-        DrinkDto expectedDrinkDto = new DrinkDto(1L,"Red Bull",0.0,null);
-        List<DrinkDto> expected = new ArrayList<>();
+        DrinkGetDto expectedDrinkDto = new DrinkGetDto(1L,"Red Bull",0.0,listGet);
+        List<DrinkGetDto> expected = new ArrayList<>();
         expected.add(expectedDrinkDto);
 
         //act
@@ -70,7 +84,7 @@ class DrinkServiceTest {
         .when(drinkRepository.findAll())
                 .thenReturn(List.of(drink));
 
-        List<DrinkDto> actual = drinkService.getAllDrinks();
+        List<DrinkGetDto> actual = drinkService.getAllDrinks();
         //assert
         assertThat(actual.size()).isEqualTo(expected.size());
         assertThat(actual).contains(expectedDrinkDto);
@@ -78,19 +92,16 @@ class DrinkServiceTest {
 
     @Test
     void getDrinkByIdGoodFlowAndDrinkNotFoundError() {
-        //arange
-        DrinkDto expected = new DrinkDto(1L,"Red Bull",0.0,null);
         //act
         Mockito
                 .when(drinkRepository.findById(drink.getId()))
                 .thenReturn(Optional.of(drink));
 
-        DrinkDto actual = drinkService.getDrinkById(drink.getId());
+        DrinkGetDto actual = drinkService.getDrinkById(drink.getId());
         //assert
-        assertEquals(actual.getId(),expected.getId());
-        assertEquals(actual.getPrice(),expected.getPrice());
-        assertEquals(actual.getIngredients(),expected.getIngredients());
-        assertEquals(actual.getName(),expected.getName());
+        assertEquals(actual.getId(),drinkGetDto.getId());
+        assertEquals(actual.getPrice(),drinkDto.getPrice());
+        assertEquals(actual.getName(),drinkDto.getName());
         assertThrows(RecordNotFoundException.class,
                 ()->{drinkService.getDrinkById(drink.getId()+1);},
                 "Drink not found");
@@ -204,7 +215,7 @@ class DrinkServiceTest {
 
         drinkService.addIngredient(drink.getId(), ingredient.getId());
 
-        Mockito.verify(drinkRepository, Mockito.times(1)).save(drink);
+        Mockito.verify(drinkRepository, Mockito.times(2)).save(drink);
         assertThrows(RecordNotFoundException.class,
                 ()->{drinkService.addIngredient(drink.getId()+1,ingredient.getId());},
                 "Drink not found");
@@ -226,7 +237,7 @@ class DrinkServiceTest {
 
         drinkService.removeIngredient(drink.getId(), ingredient.getId());
 
-        Mockito.verify(drinkRepository, Mockito.times(1)).save(drink);
+        Mockito.verify(drinkRepository, Mockito.times(2)).save(drink);
         assertThrows(RecordNotFoundException.class,
                 () -> {
                     drinkService.removeIngredient(drink.getId() + 1, ingredient.getId());
@@ -262,6 +273,24 @@ class DrinkServiceTest {
         assertThrows(RecordNotFoundException.class,
                 ()->{drinkService.deleteDrink(drink.getId()+1);},
                 "Drink not found");
+    }
+
+    @Test
+    void castDrinkListToDrinkGetDtoList(){
+        drink.addIngredient(ingredient);
+        List<Drink> listDrink = new ArrayList<>();
+        listDrink.add(drink);
+        List<DrinkGetDto> actual =  drinkService.fromDrinkList(listDrink);
+
+        assertEquals(drinkGetDtos.size(),actual.size());
+        assertEquals(drinkGetDtos.getClass(),actual.getClass());
+        for (Drink list : drinkList){
+            assertEquals(drinkGetDto.getId(),list.getId());
+            assertEquals(drinkGetDto.getPrice(),list.getPrice());
+            assertEquals(drinkGetDto.getName(),list.getName());
+        }
+
+
     }
 
 

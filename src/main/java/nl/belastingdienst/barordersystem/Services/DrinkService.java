@@ -1,8 +1,6 @@
 package nl.belastingdienst.barordersystem.Services;
 
-import nl.belastingdienst.barordersystem.Dto.CreateDrinkDto;
-import nl.belastingdienst.barordersystem.Dto.CustomerDto;
-import nl.belastingdienst.barordersystem.Dto.DrinkDto;
+import nl.belastingdienst.barordersystem.Dto.*;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Customer;
 import nl.belastingdienst.barordersystem.Models.Drink;
@@ -30,22 +28,21 @@ public class DrinkService {
         this.ingredientService = ingredientService;
     }
 
-    public List<DrinkDto> getAllDrinks() {
+    public List<DrinkGetDto> getAllDrinks() {
         List<Drink> drinks = drinkRepository.findAll();
-        List<DrinkDto> drinkDtos = new ArrayList<>();
+        List<DrinkGetDto> drinkDtos = new ArrayList<>();
         for(Drink drink : drinks){
-            drinkDtos.add(fromDrink(drink));
+            drinkDtos.add(fromDrinktoDrinkGetDto(drink));
         }
         return drinkDtos;
     }
-    public DrinkDto getDrinkById(Long id) {
+    public DrinkGetDto getDrinkById(Long id) {
         Optional<Drink> DrinkOptional = drinkRepository.findById(id);
-        if (!DrinkOptional.isPresent()) {
+        if (DrinkOptional.isEmpty()) {
             throw new RecordNotFoundException("No drink found");
         } else {
             Drink drink = DrinkOptional.get();
-            DrinkDto drinkDto = fromDrink(drink);
-            return drinkDto;
+            return fromDrinktoDrinkGetDto(drink);
         }
     }
     public double getDrinkPrice(Long id) {
@@ -80,23 +77,13 @@ public class DrinkService {
 
     }
 
-
-    private DrinkDto fromDrink(Drink drink){
-        DrinkDto drinkDto = new DrinkDto();
+    public DrinkGetDto fromDrinktoDrinkGetDto(Drink drink){
+        DrinkGetDto drinkDto = new DrinkGetDto();
         drinkDto.setId(drink.getId());
         drinkDto.setName(drink.getName());
-        drinkDto.setIngredients(drink.getIngredients());
+        drinkDto.setIngredients(fromIngredientList(drink.getIngredients()));
         drinkDto.setPrice(drink.getPrice());
         return drinkDto;
-    }
-
-    private Drink toDrink(DrinkDto drinkDto){
-        Drink drink = new Drink();
-        drink.setId(drinkDto.getId());
-        drink.setName(drinkDto.getName());
-        drink.setIngredients(drinkDto.getIngredients());
-        drink.setPrice(drinkDto.getPrice());
-        return drink;
     }
 
     private Drink toCustomDrink(CreateDrinkDto drinkDto){
@@ -114,10 +101,12 @@ public class DrinkService {
         return drink;
     }
     private void updatePrice(Long id){
-        Drink drink = toDrink(getDrinkById(id));
-        drink.setPrice(getDrinkPrice(drink.getId()));
-        drinkRepository.save(drink);
-
+        Optional<Drink> drinkOptional = drinkRepository.findById(id);
+        if (drinkOptional.isPresent()) {
+            Drink drink = drinkOptional.get();
+            drink.setPrice(getDrinkPrice(drink.getId()));
+            drinkRepository.save(drink);
+        }
     }
 
     public void addIngredient(Long drinkId, Long ingredientId) {
@@ -159,6 +148,29 @@ public class DrinkService {
         drink.setIngredients(dto.getIngredients());
         drink.setPrice(dto.getPrice());
         drinkRepository.save(drink);
+    }
+
+    public List<DrinkGetDto> fromDrinkList(List<Drink> drinkList){
+        List<DrinkGetDto> drinkGetDtos = new ArrayList<>();
+        for (Drink drink : drinkList) {
+            DrinkGetDto drinkDto = new DrinkGetDto();
+            drinkDto.setId(drink.getId());
+            drinkDto.setName(drink.getName());
+            drinkDto.setIngredients(fromIngredientList(drink.getIngredients()));
+            drinkDto.setPrice(drink.getPrice());
+            drinkGetDtos.add(drinkDto);
+        }
+        return drinkGetDtos;
+    }
+
+    private List<IngredientByDrinkDto> fromIngredientList(List<Ingredient> ingredientList){
+        List<IngredientByDrinkDto> ingredientByDrinkDtoList = new ArrayList<>();
+        for (Ingredient ingredient : ingredientList) {
+            IngredientByDrinkDto ingredientByDrinkDto = new IngredientByDrinkDto();
+            ingredientByDrinkDto.setName(ingredient.getName());
+            ingredientByDrinkDtoList.add(ingredientByDrinkDto);
+        }
+        return ingredientByDrinkDtoList;
     }
 }
 
