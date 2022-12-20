@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nl.belastingdienst.barordersystem.Models.FileDocument;
-
-import java.util.List;
 
 @Getter
 @Setter

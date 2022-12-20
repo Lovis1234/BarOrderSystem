@@ -1,7 +1,5 @@
 package nl.belastingdienst.barordersystem.Security;
 
-import nl.belastingdienst.barordersystem.Services.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -30,8 +28,6 @@ public class SecurityFilter {
     }
 
 
-
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -43,23 +39,23 @@ public class SecurityFilter {
 
                 .antMatchers("/customer/**").hasRole("STAFF")
 
-                .antMatchers(HttpMethod.GET,"/drink/**").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.GET, "/drink/**").hasRole("CUSTOMER")
                 .antMatchers("/drink/**").hasRole("STAFF")
 
-                .antMatchers(HttpMethod.GET,"/ingredient").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.GET, "/ingredient").hasRole("CUSTOMER")
                 .antMatchers("/ingredient/**").hasRole("STAFF")
 
-                .antMatchers(HttpMethod.POST,"/order").hasRole("CUSTOMER")
-                .antMatchers(HttpMethod.GET,"/order/status/{id}").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.POST, "/order").hasRole("CUSTOMER")
+                .antMatchers(HttpMethod.GET, "/order/status/{id}").hasRole("CUSTOMER")
                 .antMatchers("/order/**").hasRole("STAFF")
 
                 .antMatchers("/db/drinkimage/{id}").hasRole("CUSTOMER")
                 .antMatchers("/getInvoices/{id}").hasRole("CUSTOMER")
-                .antMatchers(HttpMethod.POST,"/db").hasRole("STAFF")
-                .antMatchers(HttpMethod.GET ,"/download/{filename}").permitAll()
+                .antMatchers(HttpMethod.POST, "/db").hasRole("STAFF")
+                .antMatchers(HttpMethod.GET, "/download/{filename}").permitAll()
                 .antMatchers("/download/**").hasRole("STAFF")
 
-                .antMatchers(HttpMethod.POST,"/users").permitAll()
+                .antMatchers(HttpMethod.POST, "/users").permitAll()
                 .antMatchers("/users/**").hasRole("STAFF")
 
 

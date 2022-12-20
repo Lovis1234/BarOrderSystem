@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nl.belastingdienst.barordersystem.Models.Authority;
 
+import java.util.HashSet;
 import java.util.Set;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -17,5 +19,5 @@ public class UserDto {
     public String username;
     public String password;
     @JsonSerialize
-    public Set<Authority> authorities;
+    public Set<Authority> authorities = new HashSet<>();
 }

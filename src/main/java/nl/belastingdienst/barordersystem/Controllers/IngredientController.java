@@ -20,24 +20,23 @@ public class IngredientController {
 
     IngredientService ingredientService;
 
-    public IngredientController(IngredientService ingredientService){
+    public IngredientController(IngredientService ingredientService) {
         this.ingredientService = ingredientService;
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<List<IngredientDto>> getAllIngredients(){
+    public ResponseEntity<List<IngredientDto>> getAllIngredients() {
         List<IngredientDto> ingredientDtos = ingredientService.getAllIngredients();
         return ResponseEntity.ok(ingredientDtos);
     }
 
 
-
     @PostMapping(value = "")
-    public ResponseEntity<Object> createIngredient(@Valid @RequestBody IngredientDto ingredientDto, BindingResult br){
+    public ResponseEntity<Object> createIngredient(@Valid @RequestBody IngredientDto ingredientDto, BindingResult br) {
         StringBuilder sb = new StringBuilder();
-        if(br.hasErrors()){
-            for(FieldError error : br.getFieldErrors()){
-                sb.append(error.getField() + ": ");
+        if (br.hasErrors()) {
+            for (FieldError error : br.getFieldErrors()) {
+                sb.append(error.getField()).append(": ");
                 sb.append(error.getDefaultMessage());
                 sb.append("\n");
             }
@@ -55,6 +54,7 @@ public class IngredientController {
         ingredientService.deleteIngredient(id);
         return ResponseEntity.noContent().build();
     }
+
     @PutMapping(value = "/{id}")
     public ResponseEntity<UserDto> updateIngredient(@PathVariable("id") Long id, @RequestBody IngredientDto dto) {
 
@@ -62,7 +62,6 @@ public class IngredientController {
 
         return ResponseEntity.noContent().build();
     }
-
 
 
 }

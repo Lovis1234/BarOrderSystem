@@ -22,19 +22,16 @@ public class OrderLineController {
 
     OrderLineService orderLineService;
 
-    public OrderLineController(OrderLineService orderLineService){
+    public OrderLineController(OrderLineService orderLineService) {
         this.orderLineService = orderLineService;
     }
 
 
-
-
-
     @PostMapping(value = "")
-    public ResponseEntity<Object> createOrder(@Valid @RequestBody OrderLineSendDto orderDto, BindingResult br){
+    public ResponseEntity<Object> createOrder(@Valid @RequestBody OrderLineSendDto orderDto, BindingResult br) {
         StringBuilder sb = new StringBuilder();
-        if(br.hasErrors()){
-            for(FieldError error : br.getFieldErrors()){
+        if (br.hasErrors()) {
+            for (FieldError error : br.getFieldErrors()) {
                 sb.append(error.getField()).append(": ");
                 sb.append(error.getDefaultMessage());
                 sb.append("\n");
@@ -55,35 +52,35 @@ public class OrderLineController {
     }
 
     @PutMapping(value = "/{id}/claim")
-    public ResponseEntity<String> claimOrder(@PathVariable Long id, @RequestParam ("staffId") Long staffId){
+    public ResponseEntity<String> claimOrder(@PathVariable Long id, @RequestParam("staffId") Long staffId) {
 
-        orderLineService.setStatusOrder(Status.PREPARING,staffId, id);
+        orderLineService.setStatusOrder(Status.PREPARING, staffId, id);
         return ResponseEntity.ok("You have claimed order number: " + id);
     }
 
     @PutMapping(value = "/{id}/finish")
-    public ResponseEntity<String> finishOrder(@PathVariable Long id, @RequestParam ("staffId") Long staffId){
-        orderLineService.setStatusOrder(Status.DONE,staffId, id);
+    public ResponseEntity<String> finishOrder(@PathVariable Long id, @RequestParam("staffId") Long staffId) {
+        orderLineService.setStatusOrder(Status.DONE, staffId, id);
         return ResponseEntity.ok("You have finished order number: " + id);
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<List<OrderLineRecieveDto>> getAllOrders(){
+    public ResponseEntity<List<OrderLineRecieveDto>> getAllOrders() {
         List<OrderLineRecieveDto> orders = orderLineService.getAllOrders();
         return ResponseEntity.ok(orders);
     }
+
     @GetMapping(value = "/{id}/status")
-    public ResponseEntity<List<OrderLineRecieveDto>> getStatusOrders(@PathVariable Long id){
+    public ResponseEntity<List<OrderLineRecieveDto>> getStatusOrders(@PathVariable Long id) {
         List<OrderLineRecieveDto> orders = orderLineService.getAllOrdersByCustomer(id);
         return ResponseEntity.ok(orders);
     }
 
     @GetMapping(value = "/openorders")
-    public ResponseEntity<List<OrderLineRecieveDto>> getAllOpenOrders(){
+    public ResponseEntity<List<OrderLineRecieveDto>> getAllOpenOrders() {
         List<OrderLineRecieveDto> orders = orderLineService.getAllOpenOrders();
         return ResponseEntity.ok(orders);
     }
-
 
 
 }

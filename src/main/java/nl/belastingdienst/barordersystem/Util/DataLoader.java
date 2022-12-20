@@ -1,10 +1,6 @@
 package nl.belastingdienst.barordersystem.Util;
 
-import nl.belastingdienst.barordersystem.Repositories.DocFileRepository;
-import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
 import nl.belastingdienst.barordersystem.Services.DatabaseService;
-import nl.belastingdienst.barordersystem.Services.DrinkService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;

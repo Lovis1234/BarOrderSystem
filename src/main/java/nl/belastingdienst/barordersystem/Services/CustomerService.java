@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 @AllArgsConstructor
 @Service
 public class CustomerService {
@@ -21,7 +22,7 @@ public class CustomerService {
     public List<CustomerGetDto> getAllCustomers() {
         List<Customer> customers = customerRepository.findAll();
         List<CustomerGetDto> customerDtos = new ArrayList<>();
-        for(Customer customer : customers){
+        for (Customer customer : customers) {
             customerDtos.add(toCustomerGetDto(customer));
         }
         return customerDtos;
@@ -36,7 +37,7 @@ public class CustomerService {
     }
 
 
-    private CustomerDto fromCustomer(Customer customer){
+    private CustomerDto fromCustomer(Customer customer) {
         CustomerDto customerDto = new CustomerDto();
         customerDto.setId(customer.getId());
         customerDto.setName(customer.getName());
@@ -44,14 +45,14 @@ public class CustomerService {
         return customerDto;
     }
 
-    private CustomerGetDto toCustomerGetDto(Customer customer){
+    private CustomerGetDto toCustomerGetDto(Customer customer) {
         CustomerGetDto customerDto = new CustomerGetDto();
         customerDto.setId(customer.getId());
         customerDto.setName(customer.getName());
         return customerDto;
     }
 
-    private Customer toCustomer(CustomerDto customerDto){
+    private Customer toCustomer(CustomerDto customerDto) {
         Customer customer = new Customer();
         customer.setId(customer.getId());
         customer.setName(customerDto.getName());
@@ -68,11 +69,11 @@ public class CustomerService {
 
     public void updateCustomer(Long id, CustomerDto dto) {
         if (customerRepository.findById(id).isEmpty()) throw new RecordNotFoundException("Customer not found");
-            Customer customer = customerRepository.findById(id).get();
-            customer.setName(dto.getName());
-            customer.setId(dto.getId());
-            customer.setInvoices(dto.getInvoices());
-            customerRepository.save(customer);
+        Customer customer = customerRepository.findById(id).get();
+        customer.setName(dto.getName());
+        customer.setId(dto.getId());
+        customer.setInvoices(dto.getInvoices());
+        customerRepository.save(customer);
     }
 }
 
