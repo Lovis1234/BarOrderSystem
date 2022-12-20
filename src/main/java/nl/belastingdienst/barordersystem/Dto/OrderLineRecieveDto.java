@@ -18,5 +18,5 @@ public class OrderLineRecieveDto {
     private Double price;
     private Status status;
     private Barkeeper barkeeper;
-    private List<Drink> drinkList;
+    private List<DrinkGetDto> drinkList;
 }

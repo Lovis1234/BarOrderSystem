@@ -27,12 +27,15 @@ public class OrderLineService {
 
     BarkeeperRepository barkeeperRepository;
 
+    DrinkService drinkService;
 
-    public OrderLineService(OrderLineRepository orderRepository, DrinkRepository drinkRepository, CustomerRepository customerRepository, BarkeeperRepository barkeeperRepository) {
+
+    public OrderLineService(OrderLineRepository orderRepository, DrinkRepository drinkRepository, CustomerRepository customerRepository, BarkeeperRepository barkeeperRepository, DrinkService drinkService) {
         this.orderRepository = orderRepository;
         this.drinkRepository = drinkRepository;
         this.customerRepository = customerRepository;
         this.barkeeperRepository = barkeeperRepository;
+        this.drinkService = drinkService;
     }
 
     public List<OrderLineRecieveDto> getAllOrders() {
@@ -97,7 +100,7 @@ public class OrderLineService {
     private OrderLineRecieveDto fromOrderToOrderRecieveDto(OrderLine order) {
         OrderLineRecieveDto orderLineRecieveDto = new OrderLineRecieveDto();
         orderLineRecieveDto.setId(order.getId());
-        orderLineRecieveDto.setDrinkList(order.getDrinkList());
+        orderLineRecieveDto.setDrinkList(drinkService.fromDrinkList(order.getDrinkList()));
         orderLineRecieveDto.setStatus(order.getStatus());
         orderLineRecieveDto.setBarkeeper(order.getBarkeeper());
         double price = 0;

@@ -1,15 +1,17 @@
 package nl.belastingdienst.barordersystem.Services;
 
-
+import nl.belastingdienst.barordersystem.Dto.FileDocumentGetDto;
+import nl.belastingdienst.barordersystem.Dto.IngredientDto;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Customer;
 import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Models.Enums.TypeDocument;
 import nl.belastingdienst.barordersystem.Models.FileDocument;
+import nl.belastingdienst.barordersystem.Models.Ingredient;
 import nl.belastingdienst.barordersystem.Repositories.CustomerRepository;
 import nl.belastingdienst.barordersystem.Repositories.DocFileRepository;
 import nl.belastingdienst.barordersystem.Repositories.DrinkRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContextException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -27,10 +29,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -46,8 +45,9 @@ public class DatabaseService {
         this.drinkRepository = drinkRepository;
     }
 
-    public Collection<FileDocument> getALlFromDB() {
-        return doc.findAll();
+    public List<FileDocumentGetDto> getALlFromDB() {
+        List<FileDocument> fileDocuments = doc.findAll();
+        return  fromFileDocument(fileDocuments);
     }
 
     public String[] getALlFromCustomer(Long id) {
@@ -135,12 +135,12 @@ public class DatabaseService {
         try {
             resource = new UrlResource(url);
         } catch (MalformedURLException e) {
-            throw new RuntimeException("Issue in reading the file", e);
+            throw new ApplicationContextException("File not readable",e);
         }
         if(resource.exists()&& resource.isReadable()) {
             return resource;
         } else {
-            throw new RuntimeException("the file doesn't exist or not readable");
+            throw new ApplicationContextException("the file doesn't exist or not readable");
         }
     }
 
@@ -156,7 +156,7 @@ public class DatabaseService {
 
                     zos.closeEntry();
                 } catch (IOException e) {
-                    System.out.println("some exception while zipping");
+                    throw new ApplicationContextException("some exception while zipping",e);
                 }
 
     }
@@ -178,6 +178,17 @@ public class DatabaseService {
         FileDocument document = drinkRepository.findById(drinkId).get().getPicture();
         String mimeType = request.getServletContext().getMimeType(document.getFileName());
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + document.getFileName()).body(document.getDocFile());
+    }
 
+    private List<FileDocumentGetDto> fromFileDocument(List<FileDocument> fileDocuments) {
+        List<FileDocumentGetDto> fileDocumentGetDtos = new ArrayList<>();
+        for (FileDocument fileDocument : fileDocuments) {
+        FileDocumentGetDto fileDocumentGetDto = new FileDocumentGetDto();
+        fileDocumentGetDto.setId(fileDocument.getId());
+        fileDocumentGetDto.setFileName(fileDocument.getFileName());
+        fileDocumentGetDtos.add(fileDocumentGetDto);
     }
+        return fileDocumentGetDtos;
     }
+
+}
