@@ -1,9 +1,6 @@
 package nl.belastingdienst.barordersystem.Controllers;
 
-import nl.belastingdienst.barordersystem.Dto.CreateDrinkDto;
-import nl.belastingdienst.barordersystem.Dto.DrinkDto;
-import nl.belastingdienst.barordersystem.Dto.DrinkGetDto;
-import nl.belastingdienst.barordersystem.Dto.UserDto;
+import nl.belastingdienst.barordersystem.Dto.*;
 import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Services.DrinkService;
 import org.springframework.http.HttpStatus;
@@ -28,8 +25,8 @@ public class DrinkController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<List<DrinkGetDto>> getAllDrinks() {
-        List<DrinkGetDto> drinkDtos = drinkService.getAllDrinks();
+    public ResponseEntity<List<DrinkGetAllDto>> getAllDrinks() {
+        List<DrinkGetAllDto> drinkDtos = drinkService.getAllDrinks();
         return ResponseEntity.ok(drinkDtos);
     }
 
@@ -79,7 +76,7 @@ public class DrinkController {
     public ResponseEntity<String> removeIngredient(@RequestParam("drinkId") Long drinkId, @RequestParam("ingredientId") Long ingredientId) {
         {
             drinkService.removeIngredient(drinkId, ingredientId);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.noContent().build();
 
         }
     }

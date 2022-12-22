@@ -1,9 +1,6 @@
 package nl.belastingdienst.barordersystem.Services;
 
-import nl.belastingdienst.barordersystem.Dto.CreateDrinkDto;
-import nl.belastingdienst.barordersystem.Dto.DrinkDto;
-import nl.belastingdienst.barordersystem.Dto.DrinkGetDto;
-import nl.belastingdienst.barordersystem.Dto.IngredientByDrinkDto;
+import nl.belastingdienst.barordersystem.Dto.*;
 import nl.belastingdienst.barordersystem.Exceptions.RecordNotFoundException;
 import nl.belastingdienst.barordersystem.Models.Drink;
 import nl.belastingdienst.barordersystem.Models.Ingredient;
@@ -29,11 +26,11 @@ public class DrinkService {
         this.ingredientService = ingredientService;
     }
 
-    public List<DrinkGetDto> getAllDrinks() {
+    public List<DrinkGetAllDto> getAllDrinks() {
         List<Drink> drinks = drinkRepository.findAll();
-        List<DrinkGetDto> drinkDtos = new ArrayList<>();
+        List<DrinkGetAllDto> drinkDtos = new ArrayList<>();
         for (Drink drink : drinks) {
-            drinkDtos.add(fromDrinktoDrinkGetDto(drink));
+            drinkDtos.add(fromDrinktoDrinkGetAllDto(drink));
         }
         return drinkDtos;
     }
@@ -55,29 +52,31 @@ public class DrinkService {
     public Drink createDrink(CreateDrinkDto drinkDto) {
         Drink drink = toCustomDrink(drinkDto);
         drink.setPermanent(true);
-        drinkRepository.save(drink);
-        Drink drinkSaved = drinkRepository.findById(drink.getId()).get();
-        drinkSaved.setPrice(getDrinkPrice(drinkSaved.getId()));
-        drinkRepository.save(drinkSaved);
-        return drink;
+        return updateDrinkPrice(drink);
 
     }
 
     public Long deleteCustomDrinks() {
-        Long deleted = drinkRepository.deleteByPermanent(false);
-        return deleted;
+        return drinkRepository.deleteByPermanent(false);
     }
 
     public Drink createCustomDrink(CreateDrinkDto drinkDto) {
         Drink drink = toCustomDrink(drinkDto);
         drink.setPermanent(false);
         drink.setName(drinkDto.getName() + " - Custom drink");
-        drinkRepository.save(drink);
-        Drink drinkSaved = drinkRepository.findById(drink.getId()).get();
-        drinkSaved.setPrice(this.getDrinkPrice(drinkSaved.getId()));
-        drinkRepository.save(drinkSaved);
-        return drink;
+        return updateDrinkPrice(drink);
 
+    }
+
+    private Drink updateDrinkPrice(Drink drink) {
+        drinkRepository.save(drink);
+        Optional<Drink> drinkSavedOptional = drinkRepository.findById(drink.getId());
+        if (drinkSavedOptional.isEmpty()) throw new RecordNotFoundException("Drink not found!"); else {
+            Drink drinkSaved = drinkSavedOptional.get();
+            drinkSaved.setPrice(getDrinkPrice(drinkSaved.getId()));
+            drinkRepository.save(drinkSaved);
+        }
+        return drink;
     }
 
     public DrinkGetDto fromDrinktoDrinkGetDto(Drink drink) {
@@ -85,6 +84,13 @@ public class DrinkService {
         drinkDto.setId(drink.getId());
         drinkDto.setName(drink.getName());
         drinkDto.setIngredients(fromIngredientList(drink.getIngredients()));
+        drinkDto.setPrice(drink.getPrice());
+        return drinkDto;
+    }
+
+    private DrinkGetAllDto fromDrinktoDrinkGetAllDto(Drink drink) {
+        DrinkGetAllDto drinkDto = new DrinkGetAllDto();
+        drinkDto.setName(drink.getName());
         drinkDto.setPrice(drink.getPrice());
         return drinkDto;
     }

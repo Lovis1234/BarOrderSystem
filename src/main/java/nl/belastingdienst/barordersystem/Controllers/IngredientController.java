@@ -1,7 +1,6 @@
 package nl.belastingdienst.barordersystem.Controllers;
 
 import nl.belastingdienst.barordersystem.Dto.IngredientDto;
-import nl.belastingdienst.barordersystem.Dto.UserDto;
 import nl.belastingdienst.barordersystem.Services.IngredientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +55,7 @@ public class IngredientController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<UserDto> updateIngredient(@PathVariable("id") Long id, @RequestBody IngredientDto dto) {
+    public ResponseEntity<Object> updateIngredient(@PathVariable("id") Long id, @RequestBody IngredientDto dto) {
 
         ingredientService.updateIngredient(id, dto);
 

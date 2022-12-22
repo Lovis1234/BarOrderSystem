@@ -27,15 +27,5 @@ public class OrderLine {
     private double price;
     private Status status;
 
-    @Override
-    public String toString() {
-        return "OrderLine{" +
-                "id=" + id +
-                ", drinkList=" + drinkList +
-                ", customer=" + customer +
-                ", barkeeper=" + barkeeper +
-                ", price=" + price +
-                ", status=" + status +
-                '}';
-    }
+
 }

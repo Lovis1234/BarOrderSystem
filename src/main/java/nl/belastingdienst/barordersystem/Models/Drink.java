@@ -23,8 +23,6 @@ public class Drink {
     private Double price;
     @ManyToOne
     private FileDocument picture;
-
-
     @ManyToMany
     private List<Ingredient> ingredients;
 
