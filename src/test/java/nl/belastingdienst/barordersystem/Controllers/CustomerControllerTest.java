@@ -39,8 +39,8 @@ class CustomerControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
         ObjectWriter ow = objectMapper.writer().withDefaultPrettyPrinter();
-        String requestJson =ow.writeValueAsString(newCustomerDto);
-        String requestJsonError =ow.writeValueAsString(invoices);
+        String requestJson = ow.writeValueAsString(newCustomerDto);
+        String requestJsonError = ow.writeValueAsString(invoices);
         //act
         Mockito
                 .when(customerService.createCustomer(newCustomerDto))
@@ -50,7 +50,7 @@ class CustomerControllerTest {
         mockMvc
                 .perform(MockMvcRequestBuilders.post("/customer").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
-                        .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(MockMvcResultMatchers.status().isCreated());
         //assert error
         mockMvc
                 .perform(MockMvcRequestBuilders.post("/customer").contentType(MediaType.APPLICATION_JSON)
