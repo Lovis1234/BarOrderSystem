@@ -70,8 +70,9 @@ public class IngredientService {
     }
 
     public void updateIngredient(Long id, IngredientDto dto) {
-        if (ingredientRepository.findById(id).isPresent()) {
-            Ingredient ingredient = ingredientRepository.findById(id).get();
+        Optional<Ingredient> ingredientOptional = ingredientRepository.findById(id);
+        if (ingredientOptional.isPresent()) {
+            Ingredient ingredient = ingredientOptional.get();
             ingredient.setName(dto.getName());
             ingredient.setPrice(dto.getPrice());
             ingredient.setId(dto.getId());
