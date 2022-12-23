@@ -27,10 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -70,7 +67,6 @@ public class DatabaseService {
         fileDocument.setFileName(name);
         fileDocument.setDocFile(file.getBytes());
         doc.save(fileDocument);
-
         if (type == TypeDocument.INVOICE) {
             insertInvoice(destinationId, fileDocument);
         } else if (type == TypeDocument.DRINKPICTURE) {
@@ -88,17 +84,19 @@ public class DatabaseService {
     }
 
     private void insertInvoice(Long customerId, FileDocument file) {
-        Customer customer = customerRepository.findById(customerId).get();
-        if (customer.getInvoices() == null) {
-            List<FileDocument> list = null;
-            list.add(file);
-            customer.setInvoices(list);
+        Optional<Customer> customerOptional = customerRepository.findById(customerId);
+        if (customerOptional.isEmpty()) throw new RecordNotFoundException("Customer not found"); else {
+            Customer customer = customerOptional.get();
+            List<FileDocument> list;
+            if (customer.getInvoices() == null) {
+                list = new ArrayList<>();
+                list.add(file);
+                customer.setInvoices(list);
+            } else {
+                list = customer.getInvoices();
+                list.add(file);
+            }
             customerRepository.save(customer);
-        } else {
-            List<FileDocument> list = customer.getInvoices();
-            list.add(file);
-            customerRepository.save(customer);
-
         }
     }
 
@@ -166,7 +164,7 @@ public class DatabaseService {
     public void preload(File file)
             throws IOException {
         Long count = doc.count();
-        String name = StringUtils.cleanPath(Objects.requireNonNull(count + file.getName()));
+        String name = StringUtils.cleanPath(count + file.getName());
         FileDocument fileDocument = new FileDocument();
         fileDocument.setFileName(name);
         FileInputStream fl = new FileInputStream(file);
@@ -178,9 +176,12 @@ public class DatabaseService {
     }
 
     public ResponseEntity<byte[]> getDrinkImage(Long drinkId, HttpServletRequest request) {
-        FileDocument document = drinkRepository.findById(drinkId).get().getPicture();
-        String mimeType = request.getServletContext().getMimeType(document.getFileName());
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + document.getFileName()).body(document.getDocFile());
+        Optional<Drink> drinkOptional = drinkRepository.findById(drinkId);
+        if (drinkOptional.isEmpty()) throw new RecordNotFoundException("Drink not found"); else {
+            FileDocument document = drinkOptional.get().getPicture();
+            String mimeType = request.getServletContext().getMimeType(document.getFileName());
+            return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + document.getFileName()).body(document.getDocFile());
+        }
     }
 
     private List<FileDocumentGetDto> fromFileDocument(List<FileDocument> fileDocuments) {
