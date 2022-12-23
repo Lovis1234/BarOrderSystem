@@ -21,6 +21,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 @ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.Silent.class)
 class IngredientServiceTest {
@@ -35,15 +36,15 @@ class IngredientServiceTest {
     private IngredientDto ingredientDto;
 
     @BeforeEach
-    void setup(){
-        ingredient = new Ingredient(1L,"Test",10);
-        ingredientDto = new IngredientDto(1L,"Test",10.0);
+    void setup() {
+        ingredient = new Ingredient(1L, "Test", 10);
+        ingredientDto = new IngredientDto(1L, "Test", 10.0);
 
     }
 
     @Test
     void getAllIngredients() {
-        IngredientDto expectedIngredientDto = new IngredientDto(1L,"Test",10.0);
+        IngredientDto expectedIngredientDto = new IngredientDto(1L, "Test", 10.0);
         List<IngredientDto> expected = new ArrayList<>();
         expected.add(expectedIngredientDto);
 
@@ -59,7 +60,7 @@ class IngredientServiceTest {
 
     @Test
     void getIngredientById() {
-        Ingredient expected = new Ingredient(1L,"Test",10);
+        Ingredient expected = new Ingredient(1L, "Test", 10);
 
         Mockito
                 .when(ingredientRepository.findById(ingredient.getId()))
@@ -67,18 +68,17 @@ class IngredientServiceTest {
 
         Ingredient actual = ingredientService.getIngredientById(ingredient.getId());
 
-        assertEquals(actual.getId(),expected.getId());
-        assertEquals(actual.getPrice(),expected.getPrice());
-        assertEquals(actual.getName(),expected.getName());
+        assertEquals(actual.getId(), expected.getId());
+        assertEquals(actual.getPrice(), expected.getPrice());
+        assertEquals(actual.getName(), expected.getName());
         assertThrows(RecordNotFoundException.class,
-                ()->{ingredientService.getIngredientById(ingredient.getId()+1);},
+                () -> ingredientService.getIngredientById(ingredient.getId() + 1),
                 "Ingredient not found");
     }
 
     @Test
     void createIngredient() {
-        Ingredient expected = new Ingredient(1L,"Test",10.0);
-
+        Ingredient expected = new Ingredient(1L, "Test", 10.0);
 
 
         Mockito
@@ -87,13 +87,13 @@ class IngredientServiceTest {
 
         IngredientDto actual = ingredientService.createIngredient(ingredientDto);
 
-        assertEquals(actual.getId(),expected.getId());
-        assertEquals(actual.getName(),expected.getName());
-        assertEquals(actual.getPrice(),expected.getPrice());
+        assertEquals(actual.getId(), expected.getId());
+        assertEquals(actual.getName(), expected.getName());
+        assertEquals(actual.getPrice(), expected.getPrice());
     }
 
     @Test
-    void deleteIngredient(){
+    void deleteIngredient() {
 
         Mockito
                 .when(ingredientRepository.findById(ingredient.getId()))
@@ -104,19 +104,20 @@ class IngredientServiceTest {
 
         Mockito.verify(ingredientRepository, Mockito.times(1)).delete(ingredient);
         assertThrows(RecordNotFoundException.class,
-                ()->{ingredientService.deleteIngredient(ingredient.getId()+1);},
+                () -> ingredientService.deleteIngredient(ingredient.getId() + 1),
                 "Ingredient not found");
     }
+
     @Test
-    void updateIngredient(){
+    void updateIngredient() {
         Mockito
                 .when(ingredientRepository.findById(ingredient.getId()))
                 .thenReturn(Optional.of(ingredient));
-        ingredientService.updateIngredient(ingredient.getId(),ingredientDto);
+        ingredientService.updateIngredient(ingredient.getId(), ingredientDto);
 
         Mockito.verify(ingredientRepository, Mockito.times(1)).save(ingredient);
         assertThrows(RecordNotFoundException.class,
-                ()->{ingredientService.deleteIngredient(ingredient.getId()+1);},
+                () -> ingredientService.deleteIngredient(ingredient.getId() + 1),
                 "Ingredient not found");
     }
 }

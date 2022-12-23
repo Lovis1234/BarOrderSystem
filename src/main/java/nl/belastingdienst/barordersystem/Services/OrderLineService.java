@@ -49,8 +49,10 @@ public class OrderLineService {
     public List<OrderLineRecieveDto> getAllOrdersByCustomer(Long id) {
         List<OrderLine> orders = orderRepository.findAllByCustomer_Id(id);
         List<OrderLineRecieveDto> orderLineRecieveDtos = new ArrayList<>();
-        for (OrderLine order : orders) {
-            orderLineRecieveDtos.add(fromOrderToOrderRecieveDto(order));
+        if (orders.isEmpty()){ throw new RecordNotFoundException("No orders found"); } else {
+            for (OrderLine order : orders) {
+                orderLineRecieveDtos.add(fromOrderToOrderRecieveDto(order));
+            }
         }
         return orderLineRecieveDtos;
     }

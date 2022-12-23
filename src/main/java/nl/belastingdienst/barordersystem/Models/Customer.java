@@ -17,4 +17,7 @@ import java.util.List;
 public class Customer extends Person {
     @OneToMany
     private List<FileDocument> invoices;
+
+    @OneToMany
+    protected List<OrderLine> orders;
 }
