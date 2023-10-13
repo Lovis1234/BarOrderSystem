@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -28,7 +28,7 @@ public class UploadDownloadWithDatabaseController {
     }
 
     @PostMapping("")
-    public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam TypeDocument type, @RequestParam("destinationId") Long id) throws IOException {
+    public FileUploadResponse singleFileUpload(@RequestParam MultipartFile file, @RequestParam TypeDocument type, @RequestParam("destinationId") Long id) throws IOException {
         FileDocument fileDocument = databaseService.uploadFileDocument(file, type, id);
         String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/db/").path(Objects.requireNonNull(fileDocument.getFileName())).toUriString();
         String contentType = file.getContentType();

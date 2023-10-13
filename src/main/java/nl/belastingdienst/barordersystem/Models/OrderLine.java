@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nl.belastingdienst.barordersystem.Models.Enums.Status;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 
 @Getter

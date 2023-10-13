@@ -5,7 +5,7 @@ import nl.belastingdienst.barordersystem.Models.Drink;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 
 public interface DrinkRepository extends JpaRepository<Drink, Long> {

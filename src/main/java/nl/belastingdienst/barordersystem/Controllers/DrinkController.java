@@ -10,7 +10,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -66,14 +66,14 @@ public class DrinkController {
     }
 
     @PutMapping(value = "/ingredient")
-    public ResponseEntity<String> addIngredient(@RequestParam("drinkId") Long drinkId, @RequestParam("ingredientId") Long ingredientId) {
+    public ResponseEntity<String> addIngredient(@RequestParam Long drinkId, @RequestParam Long ingredientId) {
         drinkService.addIngredient(drinkId, ingredientId);
         return ResponseEntity.ok().build();
 
     }
 
     @DeleteMapping(value = "/ingredient")
-    public ResponseEntity<String> removeIngredient(@RequestParam("drinkId") Long drinkId, @RequestParam("ingredientId") Long ingredientId) {
+    public ResponseEntity<String> removeIngredient(@RequestParam Long drinkId, @RequestParam Long ingredientId) {
         {
             drinkService.removeIngredient(drinkId, ingredientId);
             return ResponseEntity.noContent().build();
@@ -100,13 +100,13 @@ public class DrinkController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Object> deleteDink(@PathVariable("id") Long id) {
+    public ResponseEntity<Object> deleteDink(@PathVariable Long id) {
         drinkService.deleteDrink(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<UserDto> updateDrink(@PathVariable("id") Long id, @RequestBody DrinkDto dto) {
+    public ResponseEntity<UserDto> updateDrink(@PathVariable Long id, @RequestBody DrinkDto dto) {
 
         drinkService.updateDrink(id, dto);
         return ResponseEntity.noContent().build();

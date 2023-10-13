@@ -42,7 +42,7 @@ class DrinkServiceTest {
     private List<DrinkGetDto> drinkGetDtos;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         drinkDto = new DrinkDto(1L, "Red Bull", 0.0, null);
         List<IngredientByDrinkDto> listGet = new ArrayList<>();
         drinkGetDto = new DrinkGetDto(1L, "Red Bull", 0.0, listGet);

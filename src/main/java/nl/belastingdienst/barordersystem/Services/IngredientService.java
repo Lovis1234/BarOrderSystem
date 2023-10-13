@@ -29,7 +29,7 @@ public class IngredientService {
 
     public Ingredient getIngredientById(Long id) {
         Optional<Ingredient> IngredientOptional = ingredientRepository.findById(id);
-        if (!IngredientOptional.isPresent()) {
+        if (IngredientOptional.isEmpty()) {
             throw new RecordNotFoundException("Ingredient not found");
         } else {
             Ingredient ingredient = IngredientOptional.get();

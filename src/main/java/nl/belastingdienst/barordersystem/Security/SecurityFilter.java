@@ -32,31 +32,31 @@ public class SecurityFilter {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/authenticate").permitAll()
+                .authorizeHttpRequests()
+                .requestMatchers("/authenticate").permitAll()
 
-                .antMatchers("/barkeeper/**").hasRole("STAFF")
+                .requestMatchers("/barkeeper/**").hasRole("STAFF")
 
-                .antMatchers("/customer/**").hasRole("STAFF")
+                .requestMatchers("/customer/**").hasRole("STAFF")
 
-                .antMatchers(HttpMethod.GET, "/drink/**").hasRole("CUSTOMER")
-                .antMatchers("/drink/**").hasRole("STAFF")
+                .requestMatchers(HttpMethod.GET, "/drink/**").hasRole("CUSTOMER")
+                .requestMatchers("/drink/**").hasRole("STAFF")
 
-                .antMatchers(HttpMethod.GET, "/ingredient").hasRole("CUSTOMER")
-                .antMatchers("/ingredient/**").hasRole("STAFF")
+                .requestMatchers(HttpMethod.GET, "/ingredient").hasRole("CUSTOMER")
+                .requestMatchers("/ingredient/**").hasRole("STAFF")
 
-                .antMatchers(HttpMethod.POST, "/order").hasRole("CUSTOMER")
-                .antMatchers(HttpMethod.GET, "/order/status/{id}").hasRole("CUSTOMER")
-                .antMatchers("/order/**").hasRole("STAFF")
+                .requestMatchers(HttpMethod.POST, "/order").hasRole("CUSTOMER")
+                .requestMatchers(HttpMethod.GET, "/order/status/{id}").hasRole("CUSTOMER")
+                .requestMatchers("/order/**").hasRole("STAFF")
 
-                .antMatchers("/db/drinkimage/{id}").hasRole("CUSTOMER")
-                .antMatchers("/getInvoices/{id}").hasRole("CUSTOMER")
-                .antMatchers(HttpMethod.POST, "/db").hasRole("STAFF")
-                .antMatchers(HttpMethod.GET, "/download/{filename}").permitAll()
-                .antMatchers("/download/**").hasRole("STAFF")
+                .requestMatchers("/db/drinkimage/{id}").hasRole("CUSTOMER")
+                .requestMatchers("/getInvoices/{id}").hasRole("CUSTOMER")
+                .requestMatchers(HttpMethod.POST, "/db").hasRole("STAFF")
+                .requestMatchers(HttpMethod.GET, "/download/{filename}").permitAll()
+                .requestMatchers("/download/**").hasRole("STAFF")
 
-                .antMatchers(HttpMethod.POST, "/users").permitAll()
-                .antMatchers("/users/**").hasRole("STAFF")
+                .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                .requestMatchers("/users/**").hasRole("STAFF")
 
 
 //                .antMatchers("/**").denyAll()

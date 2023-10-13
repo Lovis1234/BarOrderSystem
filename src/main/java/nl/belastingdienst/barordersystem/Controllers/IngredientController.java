@@ -9,7 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -49,13 +49,13 @@ public class IngredientController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Object> deleteUser(@PathVariable("id") Long id) {
+    public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
         ingredientService.deleteIngredient(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Object> updateIngredient(@PathVariable("id") Long id, @RequestBody IngredientDto dto) {
+    public ResponseEntity<Object> updateIngredient(@PathVariable Long id, @RequestBody IngredientDto dto) {
 
         ingredientService.updateIngredient(id, dto);
 

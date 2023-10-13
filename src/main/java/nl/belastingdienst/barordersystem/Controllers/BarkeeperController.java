@@ -10,7 +10,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -49,13 +49,13 @@ public class BarkeeperController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Object> deleteBarkeeper(@PathVariable("id") Long id) {
+    public ResponseEntity<Object> deleteBarkeeper(@PathVariable Long id) {
         barkeeperService.deleteBarkeeper(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<UserDto> updateBarkeeper(@PathVariable("id") Long id, @RequestBody BarkeeperDto dto) {
+    public ResponseEntity<UserDto> updateBarkeeper(@PathVariable Long id, @RequestBody BarkeeperDto dto) {
 
         barkeeperService.updateBarkeeper(id, dto);
 

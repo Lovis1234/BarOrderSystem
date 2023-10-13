@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{username}")
-    public ResponseEntity<UserGetDto> getUser(@PathVariable("username") String username) {
+    public ResponseEntity<UserGetDto> getUser(@PathVariable String username) {
 
         UserGetDto optionalUser = userService.getSingleUser(username);
 
@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/{username}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable("username") String username, @RequestBody UserDto dto) {
+    public ResponseEntity<UserDto> updateUser(@PathVariable String username, @RequestBody UserDto dto) {
 
         userService.updateUser(username, dto);
 
@@ -74,18 +74,18 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{username}")
-    public ResponseEntity<Object> deleteUser(@PathVariable("username") String username) {
+    public ResponseEntity<Object> deleteUser(@PathVariable String username) {
         userService.deleteUser(username);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/{username}/authorities")
-    public ResponseEntity<Object> getUserAuthorities(@PathVariable("username") String username) {
+    public ResponseEntity<Object> getUserAuthorities(@PathVariable String username) {
         return ResponseEntity.ok().body(userService.getAuthorities(username));
     }
 
     @DeleteMapping(value = "/{username}/authorities/{authority}")
-    public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String authority) {
+    public ResponseEntity<Object> deleteUserAuthority(@PathVariable String username, @PathVariable String authority) {
         userService.removeAuthority(username, authority);
         return ResponseEntity.noContent().build();
     }

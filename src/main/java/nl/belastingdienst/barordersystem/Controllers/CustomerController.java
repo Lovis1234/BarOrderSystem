@@ -13,7 +13,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -56,13 +56,13 @@ public class CustomerController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Object> deleteCustomer(@PathVariable("id") Long id) {
+    public ResponseEntity<Object> deleteCustomer(@PathVariable Long id) {
         customerService.deleteCustomer(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<UserDto> updateCustomer(@PathVariable("id") Long id, @RequestBody CustomerDto dto) {
+    public ResponseEntity<UserDto> updateCustomer(@PathVariable Long id, @RequestBody CustomerDto dto) {
 
         customerService.updateCustomer(id, dto);
 

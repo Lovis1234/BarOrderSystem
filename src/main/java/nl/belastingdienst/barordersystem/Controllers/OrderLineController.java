@@ -12,7 +12,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -46,20 +46,20 @@ public class OrderLineController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Object> deleteOrder(@PathVariable("id") Long id) {
+    public ResponseEntity<Object> deleteOrder(@PathVariable Long id) {
         orderLineService.deleteOrder(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}/claim")
-    public ResponseEntity<String> claimOrder(@PathVariable Long id, @RequestParam("staffId") Long staffId) {
+    public ResponseEntity<String> claimOrder(@PathVariable Long id, @RequestParam Long staffId) {
 
         orderLineService.setStatusOrder(Status.PREPARING, staffId, id);
         return ResponseEntity.ok("You have claimed order number: " + id);
     }
 
     @PutMapping(value = "/{id}/finish")
-    public ResponseEntity<String> finishOrder(@PathVariable Long id, @RequestParam("staffId") Long staffId) {
+    public ResponseEntity<String> finishOrder(@PathVariable Long id, @RequestParam Long staffId) {
         orderLineService.setStatusOrder(Status.DONE, staffId, id);
         return ResponseEntity.ok("You have finished order number: " + id);
     }
